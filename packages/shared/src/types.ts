@@ -1,3 +1,6 @@
+import type { ThemeId } from "./themes";
+import { DEFAULT_THEME_ID } from "./themes";
+
 export type MemoryKind = "recuerdo" | "frase" | "comentario" | "conocimiento";
 
 export const MEMORY_KIND_LABELS: Record<MemoryKind, string> = {
@@ -51,6 +54,8 @@ export interface Settings {
   ollamaModel: string;
   /** Escape hatch; no es el camino local-first. */
   openaiApiKey: string;
+  /** Skin de interfaz compartida entre entrenamiento y consulta. */
+  themeId: ThemeId;
 }
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -59,4 +64,5 @@ export const DEFAULT_SETTINGS: Settings = {
   ollamaBaseUrl: "http://127.0.0.1:11434",
   ollamaModel: "llama3.2",
   openaiApiKey: "",
+  themeId: DEFAULT_THEME_ID,
 };

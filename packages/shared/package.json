@@ -7,8 +7,11 @@
   "types": "./src/index.ts",
   "exports": {
     ".": "./src/index.ts",
-    "./disk": "./src/disk-store.ts"
+    "./disk": "./src/disk-store.ts",
+    "./themes.css": "./themes/themes.css",
+    "./assets/*": "./assets/*"
   },
+
   "dependencies": {
     "cn": "^0.4.0"
   }

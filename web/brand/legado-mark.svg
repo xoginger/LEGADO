@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="LEGADO">
+  <defs>
+    <linearGradient id="bg" x1="64" y1="40" x2="448" y2="472" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#E8F0EA"/>
+      <stop offset="1" stop-color="#D7E4DC"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(256 220) rotate(90) scale(120)">
+      <stop stop-color="#C9A45C" stop-opacity=".55"/>
+      <stop offset="1" stop-color="#C9A45C" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="512" height="512" rx="108" fill="url(#bg)"/>
+  <circle cx="256" cy="220" r="120" fill="url(#glow)"/>
+  <!-- open book -->
+  <path d="M118 348c46-28 90-28 138-6v78c-48-24-94-24-138 4V348Z" fill="#2A5245"/>
+  <path d="M394 348c-46-28-90-28-138-6v78c48-24 94-24 138 4V348Z" fill="#3F6B57"/>
+  <path d="M256 342v78" stroke="#C9A45C" stroke-width="10" stroke-linecap="round"/>
+  <!-- trunk -->
+  <path d="M256 318c0-46 2-92 2-138" fill="none" stroke="#1F3A32" stroke-width="14" stroke-linecap="round"/>
+  <!-- canopy as soft L-tree -->
+  <path d="M258 188c-58-8-92 28-96 72 38-18 70-14 96-4 22-42 62-58 102-48-28-42-62-40-102-20Z" fill="#2A5245"/>
+  <path d="M248 156c-20 18-28 42-24 68 24-10 44-8 64 2 4-30-8-52-40-70Z" fill="#3F6B57"/>
+  <!-- seed/heart -->
+  <circle cx="256" cy="214" r="16" fill="#C9A45C"/>
+  <circle cx="256" cy="214" r="7" fill="#F4F8F5"/>
+</svg>

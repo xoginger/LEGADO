@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="LEGADO">
+  <rect width="64" height="64" rx="14" fill="#E8F0EA"/>
+  <path d="M14 44c6-3.5 12-3.5 18-.8v10c-6-3-12.2-3-18 .5V44Z" fill="#2A5245"/>
+  <path d="M50 44c-6-3.5-12-3.5-18-.8v10c6-3 12.2-3 18 .5V44Z" fill="#3F6B57"/>
+  <path d="M32 40V22" stroke="#1F3A32" stroke-width="3" stroke-linecap="round"/>
+  <path d="M32 24c-8-1-12.5 3.5-13 9.5 5-2.2 9.2-1.7 13-.4 3-5.5 8.2-7.6 13.5-6.2C41.5 22.5 37 22.8 32 24Z" fill="#2A5245"/>
+  <circle cx="32" cy="27.5" r="2.6" fill="#C9A45C"/>
+</svg>
