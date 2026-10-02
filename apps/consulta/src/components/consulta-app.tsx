@@ -123,57 +123,56 @@ export function ConsultaApp() {
   const fileRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    let cancelled = false;
+    const controller = new AbortController();
     (async () => {
       const localMemories = loadMemories();
       const localMessages = loadMessages();
       const localSettings = loadSettings();
       try {
-        const res = await fetch("/api/store");
+        const res = await fetch("/api/store", { signal: controller.signal });
         if (res.ok) {
           const disk = (await res.json()) as {
             memories?: Memory[];
             messages?: ChatMessage[];
             settings?: Settings;
           };
-          if (!cancelled) {
-            const memoriesNext =
-              disk.memories && disk.memories.length > 0
-                ? disk.memories
-                : localMemories;
-            const settingsNext = {
-              ...DEFAULT_SETTINGS,
-              ...localSettings,
-              ...(disk.settings ?? {}),
-              themeId:
-                disk.settings?.themeId ??
-                localSettings.themeId ??
-                DEFAULT_SETTINGS.themeId,
-            };
-            setMemories(memoriesNext);
-            setMessages(disk.messages ?? localMessages);
-            setSettings(settingsNext);
-            saveMemories(memoriesNext);
-            saveMessages(disk.messages ?? localMessages);
-            saveSettings(settingsNext);
-            applyTheme(settingsNext.themeId);
-            setReady(true);
-            return;
-          }
+          if (controller.signal.aborted) return;
+          const memoriesNext =
+            disk.memories && disk.memories.length > 0
+              ? disk.memories
+              : localMemories;
+          const settingsNext = {
+            ...DEFAULT_SETTINGS,
+            ...localSettings,
+            ...(disk.settings ?? {}),
+            themeId:
+              disk.settings?.themeId ??
+              localSettings.themeId ??
+              DEFAULT_SETTINGS.themeId,
+          };
+          setMemories(memoriesNext);
+          setMessages(disk.messages ?? localMessages);
+          setSettings(settingsNext);
+          saveMemories(memoriesNext);
+          saveMessages(disk.messages ?? localMessages);
+          saveSettings(settingsNext);
+          applyTheme(settingsNext.themeId);
+          setReady(true);
+          return;
         }
       } catch {
+        if (controller.signal.aborted) return;
         // fallback
       }
-      if (!cancelled) {
-        setMemories(localMemories);
-        setMessages(localMessages);
-        setSettings(localSettings);
-        applyTheme(localSettings.themeId);
-        setReady(true);
-      }
+      if (controller.signal.aborted) return;
+      setMemories(localMemories);
+      setMessages(localMessages);
+      setSettings(localSettings);
+      applyTheme(localSettings.themeId);
+      setReady(true);
     })();
     return () => {
-      cancelled = true;
+      controller.abort();
     };
   }, []);
 
