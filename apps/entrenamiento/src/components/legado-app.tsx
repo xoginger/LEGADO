@@ -45,7 +45,9 @@ export function LegadoApp() {
       const localMessages = loadMessages();
       const localSettings = loadSettings();
       try {
-        const res = await fetch("/api/store");
+        const res = await fetch("/api/store", {
+          signal: AbortSignal.timeout(4000),
+        });
         if (res.ok) {
           const disk = (await res.json()) as {
             memories?: Memory[];
