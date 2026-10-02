@@ -164,18 +164,20 @@ const DOC_LINKS = {
   },
 };
 
-/** Paths the brand/skins agent may publish; landing prefers these over placeholders. */
+/** Paths the brand/skins agent may publish into web/assets/ for Pages. */
 const CANONICAL_BRAND_CANDIDATES = [
-  "../brand/legado-icon.svg",
-  "../packages/shared/brand/legado-icon.svg",
-  "../packages/shared/assets/legado-icon.svg",
+  "./assets/legado-icon.svg",
+  "./assets/brand-icon.svg",
 ];
 
 function applyTranslations(lang) {
   const next = lang === "en" ? "en" : "es";
   const dict = translations[next];
   document.documentElement.lang = next;
-  document.documentElement.dataset.lang = next;
+  // Use a distinct attribute — NOT data-lang — so it never collides with
+  // .lang-btn[data-lang="es|en"] selectors (html[data-lang] was matching first).
+  document.documentElement.setAttribute("data-legado-lang", next);
+  document.documentElement.removeAttribute("data-lang");
 
   document.querySelectorAll("[data-i18n]").forEach((el) => {
     const key = el.getAttribute("data-i18n");
@@ -200,6 +202,15 @@ function applyTranslations(lang) {
   } catch {
     /* ignore */
   }
+
+  // Reflect in URL without reload (shareable, and survives bad localStorage)
+  try {
+    const url = new URL(window.location.href);
+    url.searchParams.set("lang", next);
+    window.history.replaceState({}, "", url);
+  } catch {
+    /* ignore */
+  }
   return next;
 }
 
@@ -210,12 +221,15 @@ function setLegadoLang(lang) {
 window.setLegadoLang = setLegadoLang;
 
 function initLang() {
-  // Product default is Spanish. Only honor an explicit saved choice — never
-  // auto-switch from navigator.language (that made EN VMs look "stuck").
+  // Precedence: ?lang= → localStorage → Spanish default (never navigator.language)
   let lang = "es";
   try {
-    const saved = localStorage.getItem("legado-landing-lang");
-    if (saved === "en" || saved === "es") lang = saved;
+    const fromUrl = new URL(window.location.href).searchParams.get("lang");
+    if (fromUrl === "en" || fromUrl === "es") lang = fromUrl;
+    else {
+      const saved = localStorage.getItem("legado-landing-lang");
+      if (saved === "en" || saved === "es") lang = saved;
+    }
   } catch {
     /* ignore */
   }
@@ -243,15 +257,24 @@ async function preferCanonicalBrandIcon() {
   const img = document.querySelector("[data-brand-icon]");
   if (!img) return;
 
-  for (const path of CANONICAL_BRAND_CANDIDATES) {
+  // Only probe paths that can exist inside the Pages artifact (web/).
+  // Do not HEAD ../brand — that 404-spams the console and never ships on Pages.
+  const candidates = [
+    "./assets/brand-icon.svg",
+    "./assets/legado-icon.svg",
+  ];
+
+  for (const path of candidates) {
     try {
       const res = await fetch(path, { method: "HEAD" });
       if (res.ok) {
-        img.src = path;
+        if (!img.getAttribute("src")?.endsWith(path.replace("./", ""))) {
+          img.src = path;
+        }
         return;
       }
     } catch {
-      /* Pages deploy is web/ only — candidates may 404; keep placeholder */
+      /* keep current placeholder */
     }
   }
 }

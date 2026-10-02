@@ -148,7 +148,7 @@ code {
 .site-header {
   position: sticky;
   top: 0;
-  z-index: 20;
+  z-index: 100;
   display: flex;
   align-items: center;
   gap: 1rem;
@@ -157,6 +157,55 @@ code {
   border-bottom: 1px solid var(--line);
   background: color-mix(in oklab, var(--forest) 78%, transparent);
   backdrop-filter: blur(12px);
+}
+
+.site-nav {
+  display: none;
+  gap: 1.25rem;
+  margin-left: 1rem;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  flex-wrap: nowrap;
+}
+
+.header-actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 2;
+  pointer-events: auto;
+}
+
+.lang-toggle {
+  display: inline-flex;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0.15rem;
+  background: color-mix(in oklab, black 25%, transparent);
+  position: relative;
+  z-index: 3;
+  pointer-events: auto;
+}
+
+.lang-btn {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  padding: 0.35rem 0.65rem;
+  border-radius: 999px;
+  cursor: pointer;
+  pointer-events: auto;
+  position: relative;
+  z-index: 4;
 }
 
 .wordmark {
@@ -181,12 +230,6 @@ code {
   color: var(--gold-soft);
 }
 
-.site-nav {
-  display: none;
-  gap: 1.25rem;
-  margin-left: 1rem;
-}
-
 .site-nav a {
   color: var(--muted);
   text-decoration: none;
@@ -196,35 +239,6 @@ code {
 
 .site-nav a:hover {
   color: var(--text);
-}
-
-.header-actions {
-  margin-left: auto;
-  display: flex;
-  align-items: center;
-  gap: 0.65rem;
-}
-
-.lang-toggle {
-  display: inline-flex;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  padding: 0.15rem;
-  background: color-mix(in oklab, black 25%, transparent);
-}
-
-.lang-btn {
-  appearance: none;
-  border: 0;
-  background: transparent;
-  color: var(--muted);
-  font: inherit;
-  font-size: 0.8rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  padding: 0.35rem 0.65rem;
-  border-radius: 999px;
-  cursor: pointer;
 }
 
 .lang-btn.is-active {
