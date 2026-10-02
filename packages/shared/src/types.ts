@@ -170,7 +170,7 @@ export function getImportSourceMeta(
 export interface ImportSourceState {
   id: ImportSourceId;
   status: ImportConnectionStatus;
-  /** Cuenta mock o handle mostrado en UI. */
+  /** Etiqueta de último import (p.ej. import:archivo.zip); no implica OAuth. */
   accountLabel: string;
   lastImportAt: string | null;
   itemsImported: number;
