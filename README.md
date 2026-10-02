@@ -27,7 +27,7 @@ Optional local model: install [Ollama](https://ollama.com), pull a model (e.g. `
 
 ## Free to use · Donations
 
-LEGADO is free under the [MIT License](./LICENSE). If it helps you, you can support the project via **Ko-fi (Stripe)** — see [DONATIONS.md](./DONATIONS.md) (Ko-fi page URL: *coming soon*).
+LEGADO is free under the [MIT License](./LICENSE). If it helps you, you can support the project on **[Ko-fi](https://ko-fi.com/xoginger)** (Stripe) — details in [DONATIONS.md](./DONATIONS.md).
 
 ## Documentation
 

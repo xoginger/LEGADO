@@ -13,7 +13,7 @@ LEGADO is a personal AI trained on someone’s knowledge, memories, phrases, and
 - **Local-first** — data and model on the owner’s machine
 - **Usable AI first** — training + text chat before kiosk, voice clone, or avatar
 - Spanish UI copy; docs primarily ES + EN
-- Free and open source (MIT) with optional donations via **Ko-fi (Stripe)** — page URL coming soon (`DONATIONS.md`)
+- Free and open source (MIT) with optional donations via **[Ko-fi](https://ko-fi.com/xoginger)** (Stripe) — see `DONATIONS.md`
 - Canonical repo: [https://github.com/xoginger/LEGADO](https://github.com/xoginger/LEGADO)
 
 ## Monorepo apps

@@ -27,7 +27,7 @@ Modelo local opcional: instala [Ollama](https://ollama.com), descarga un modelo 
 
 ## Uso gratuito · Donativos
 
-LEGADO es gratuito bajo la [licencia MIT](./LICENSE). Si te sirve, puedes apoyar el proyecto vía **Ko-fi (Stripe)** — ver [DONATIONS.md](./DONATIONS.md) (URL de Ko-fi: *próximamente*).
+LEGADO es gratuito bajo la [licencia MIT](./LICENSE). Si te sirve, puedes apoyar el proyecto en **[Ko-fi](https://ko-fi.com/xoginger)** (Stripe) — detalles en [DONATIONS.md](./DONATIONS.md).
 
 ## Documentación
 
