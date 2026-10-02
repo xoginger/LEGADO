@@ -83,7 +83,7 @@ Objetivo: **IA usable en texto** — guardar memorias y chatear en local, en esp
 ### Incluye
 
 1. **Memorias (CRUD local)** — recuerdo, frase, comentario, conocimiento, foto, evento; `localStorage`.
-2. **Perfil + fuentes sociales** — Instagram, Facebook, X, Google Fotos, Apple Fotos; import por export/archivo (OAuth stub opcional). Ver [redes.md](./redes.md).
+2. **Perfil + fuentes sociales** — Instagram, Facebook, X, Google Fotos, Apple Fotos; **Importar archivo/carpeta** es el camino real (OAuth = «próximamente», sin fingir conexión). Ver [redes.md](./redes.md).
 3. **Chat texto** — contexto desde **perfil + memorias**; **Ollama** preferido; **mock** si no hay modelo; API cloud opcional.
 4. **Estados** — vacío, carga, error (también en cola de importación).
 5. **Responsive** — escritorio y móvil.

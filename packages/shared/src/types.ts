@@ -138,11 +138,11 @@ export const IMPORT_SOURCES: ImportSourceMeta[] = [
     label: "Google Fotos",
     shortLabel: "Google",
     description:
-      "Álbumes y captions vía Google Takeout. OAuth opcional; el MVP usa ZIP/JSON.",
+      "Álbumes y captions vía Google Takeout (ZIP/JSON). Sin login de Google por ahora.",
     authMode: "oauth_stub",
     accept: ".zip,.json,application/zip,application/json",
     exportHint:
-      "Google Takeout → Google Fotos (ZIP con JSON de metadatos junto a las imágenes).",
+      "takeout.google.com → Google Fotos → exportar ZIP (JSON de metadatos junto a las imágenes).",
     oauthEnvVars: [
       "LEGADO_GOOGLE_CLIENT_ID",
       "LEGADO_GOOGLE_CLIENT_SECRET",
@@ -153,7 +153,7 @@ export const IMPORT_SOURCES: ImportSourceMeta[] = [
     label: "Apple Fotos",
     shortLabel: "Apple",
     description:
-      "Álbum o carpeta exportada desde Fotos (macOS). Sin OAuth: no se rompe el sandbox.",
+      "Álbum o carpeta exportada desde Fotos (macOS). Solo import local; sin login online.",
     authMode: "folder_export",
     accept: "image/*,.json,.zip,application/zip,application/json",
     exportHint:

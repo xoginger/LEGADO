@@ -27,7 +27,7 @@ LEGADO is a personal AI trained on someone’s knowledge, memories, phrases, and
 ## MVP (this slice)
 
 - Local memories + text chat (Ollama preferred, mock fallback)
-- **Profile + social/album sources** (Instagram, Facebook, X, Google Photos, Apple Photos) — file/ZIP/folder import; OAuth stubs optional (no secrets required). See [social.md](./social.md).
+- **Profile + social/album sources** (Instagram, Facebook, X, Google Photos, Apple Photos) — **Import file/folder** is the real path; OAuth is “coming soon” (no fake “connected” state). See [social.md](./social.md).
 - Chat context includes **profile + memories** (fotos, frases, eventos)
 - Export/import JSON; optional shared disk store under `.legado-data/`
 - Empty / loading / error states (including import queue); desktop + mobile
