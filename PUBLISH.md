@@ -1,20 +1,39 @@
-# Publishing the `legado` repository
+# Publish to GitHub: xoginger/LEGADO
 
-The cloud agent could **not** create `xocotzin-granados/legado` from this environment:
+Canonical repository: **https://github.com/xoginger/LEGADO**
 
-- Origin CLI: token not scoped for `repo create` on `xocotzin-granados`
-- GitHub CLI: not authenticated
+## From this Cloud Agent VM (blocked without a GitHub token)
 
-## Maintainer steps
+Push failed with: `could not read Username for 'https://github.com'` — no `GH_TOKEN` / `gh auth` in this environment. Origin token also cannot create mirrors (`not scoped`).
 
-1. Create a **public** repository named `legado` under your Origin/GitHub account (UI or a fully scoped token).
-2. From this checkout:
+## Maintainer: push in one minute
+
+On any machine with access to this branch (or after downloading a bundle), with a GitHub PAT that can write to `xoginger/LEGADO`:
 
 ```bash
-git remote add legado https://origin.cursor.com/git/xocotzin-granados/legado.git
-# or your GitHub HTTPS URL
-git push -u legado cursor/legado-monorepo-oss-e984:main
+# Option A — from this checkout after adding a token
+git remote add github https://github.com/xoginger/LEGADO.git
+# or: git remote set-url github https://<TOKEN>@github.com/xoginger/LEGADO.git
+git push -u github cursor/legado-monorepo-oss-e984:main
 ```
 
-3. Optionally open a draft PR if you push a feature branch instead of `main`.
-4. Add the real donation URL to [DONATIONS.md](./DONATIONS.md).
+```bash
+# Option B — empty repo: set GH_TOKEN then
+export GH_TOKEN=ghp_...   # classic PAT with repo scope, or fine-grained Contents:write
+gh auth setup-git
+git push -u github cursor/legado-monorepo-oss-e984:main
+```
+
+`main` on GitHub is currently **empty** (`size: 0`), so a direct push to `main` is appropriate.
+
+## Bundle (offline handoff)
+
+If needed, create/use:
+
+```bash
+git bundle create legado-monorepo.bundle cursor/legado-monorepo-oss-e984
+# elsewhere:
+git clone legado-monorepo.bundle LEGADO
+cd LEGADO && git remote add origin https://github.com/xoginger/LEGADO.git
+git push -u origin cursor/legado-monorepo-oss-e984:main
+```

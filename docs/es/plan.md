@@ -188,7 +188,8 @@ Voz + avatar **suben** RAM/VRAM/disco vs solo chat. Detalle en [`equipo-local.md
 | `apps/consulta` | Interfaz de consulta para hijos/familia (solo chat) |
 | `packages/shared` | Tipos, storage, ranking/mock, store en disco (`.legado-data/`) |
 
-Licencia MIT · uso gratuito · donativos opcionales (`DONATIONS.md`, enlace pendiente).
+Licencia MIT · uso gratuito · donativos vía **Ko-fi (Stripe)** (`DONATIONS.md`; URL de página: próximamente).  
+Repo canónico: [https://github.com/xoginger/LEGADO](https://github.com/xoginger/LEGADO)
 
 ## Stack del primer slice
 
