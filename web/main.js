@@ -172,31 +172,31 @@ const CANONICAL_BRAND_CANDIDATES = [
 ];
 
 function applyTranslations(lang) {
-  const dict = translations[lang] || translations.es;
-  document.documentElement.lang = lang;
+  const next = lang === "en" ? "en" : "es";
+  const dict = translations[next];
+  document.documentElement.lang = next;
+  document.documentElement.dataset.lang = next;
 
   document.querySelectorAll("[data-i18n]").forEach((el) => {
     const key = el.getAttribute("data-i18n");
-    if (dict[key]) el.textContent = dict[key];
+    const value = dict[key];
+    if (typeof value === "string") el.textContent = value;
   });
 
-  const useCta = document.querySelector("[data-link='use']");
-  if (useCta) useCta.href = DOC_LINKS[lang].use;
-
-  const planCta = document.querySelector("[data-link='plan']");
-  if (planCta) planCta.href = DOC_LINKS[lang].plan;
-
-  const readmeCta = document.querySelector("[data-link='readme']");
-  if (readmeCta) readmeCta.href = DOC_LINKS[lang].readme;
+  document.querySelectorAll("[data-link]").forEach((el) => {
+    const kind = el.getAttribute("data-link");
+    const href = DOC_LINKS[next][kind];
+    if (href) el.setAttribute("href", href);
+  });
 
   document.querySelectorAll(".lang-btn").forEach((btn) => {
-    const active = btn.getAttribute("data-lang") === lang;
+    const active = btn.getAttribute("data-lang") === next;
     btn.classList.toggle("is-active", active);
     btn.setAttribute("aria-pressed", active ? "true" : "false");
   });
 
   try {
-    localStorage.setItem("legado-landing-lang", lang);
+    localStorage.setItem("legado-landing-lang", next);
   } catch {
     /* ignore */
   }
@@ -213,10 +213,12 @@ function initLang() {
   }
   applyTranslations(lang);
 
-  document.querySelectorAll(".lang-btn").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      applyTranslations(btn.getAttribute("data-lang"));
-    });
+  // Event delegation so ES↔EN keeps working even if nodes are replaced
+  document.addEventListener("click", (event) => {
+    const btn = event.target.closest(".lang-btn");
+    if (!btn) return;
+    event.preventDefault();
+    applyTranslations(btn.getAttribute("data-lang"));
   });
 }
 

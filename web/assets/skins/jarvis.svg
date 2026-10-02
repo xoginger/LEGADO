@@ -12,5 +12,5 @@
   <rect x="20" y="52" width="200" height="6" rx="2" fill="#8fd3ff" opacity="0.35"/>
   <rect x="20" y="72" width="170" height="6" rx="2" fill="#8fd3ff" opacity="0.22"/>
   <rect x="20" y="110" width="280" height="60" rx="6" fill="#0c2438" stroke="#4db8ff" stroke-opacity="0.35"/>
-  <text x="32" y="146" fill="#8fd3ff" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13">JARVIS · systems online</text>
+  <text x="32" y="146" fill="#8fd3ff" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13">JARVIS - systems online</text>
 </svg>

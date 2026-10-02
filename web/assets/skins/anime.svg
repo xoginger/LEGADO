@@ -13,5 +13,5 @@
   <rect x="20" y="28" width="120" height="14" rx="7" fill="#ffd6ea"/>
   <rect x="20" y="56" width="160" height="8" rx="4" fill="#ff9ec4" opacity="0.7"/>
   <rect x="20" y="120" width="280" height="52" rx="16" fill="#3d1f4a" stroke="#ffb4d6" stroke-opacity="0.5"/>
-  <text x="36" y="152" fill="#ffe3f0" font-family="ui-rounded, 'Segoe UI', sans-serif" font-size="14">ст З recuerdo</text>
+  <text x="36" y="152" fill="#ffe3f0" font-family="ui-rounded, 'Segoe UI', sans-serif" font-size="14">memo / recuerdo</text>
 </svg>

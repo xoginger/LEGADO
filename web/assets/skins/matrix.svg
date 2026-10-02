@@ -4,7 +4,7 @@
     <text x="16" y="28">01001100 01000101</text>
     <text x="16" y="48">01000111 01000001</text>
     <text x="16" y="68">01000100 01001111</text>
-    <text x="16" y="88">WAKE · REMEMBER</text>
+    <text x="16" y="88">WAKE / REMEMBER</text>
   </g>
   <rect x="16" y="112" width="288" height="56" rx="4" fill="#001a0a" stroke="#00ff6a" stroke-opacity="0.45"/>
   <text x="28" y="146" fill="#00ff6a" font-family="ui-monospace, monospace" font-size="14">&gt; legado --chat</text>
