@@ -2,31 +2,22 @@
   "name": "legado",
   "version": "0.1.0",
   "private": true,
+  "description": "LEGADO — local-first personal legacy AI (training + consultation apps)",
+  "license": "MIT",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
-    "dev": "next dev --port 43127",
-    "build": "next build",
-    "start": "next start --port 43127",
-    "lint": "eslint"
+    "dev": "npm run dev -w @legado/entrenamiento",
+    "dev:entrenamiento": "npm run dev -w @legado/entrenamiento",
+    "dev:consulta": "npm run dev -w @legado/consulta",
+    "build": "npm run build -w @legado/shared --if-present; npm run build -w @legado/entrenamiento && npm run build -w @legado/consulta",
+    "build:entrenamiento": "npm run build -w @legado/entrenamiento",
+    "build:consulta": "npm run build -w @legado/consulta",
+    "lint": "npm run lint -w @legado/entrenamiento && npm run lint -w @legado/consulta"
   },
-  "dependencies": {
-    "@base-ui/react": "^1.8.0",
-    "class-variance-authority": "^0.7.1",
-    "cn": "^0.4.0",
-    "lucide-react": "^1.50.0",
-    "next": "16.3.8",
-    "react": "19.2.8",
-    "react-dom": "19.2.8",
-    "shadcn": "^4.21.1",
-    "tw-animate-css": "^1.4.0"
-  },
-  "devDependencies": {
-    "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "eslint": "^9",
-    "eslint-config-next": "16.3.8",
-    "tailwindcss": "^4",
-    "typescript": "^5"
+  "engines": {
+    "node": ">=20"
   }
 }

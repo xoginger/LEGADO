@@ -1,36 +1,43 @@
 # LEGADO
 
-IA personal entrenada con tus conocimientos, recuerdos, frases y comentarios. La vas alimentando con el tiempo; el día que ya no estés, puede servir de recuerdo y contacto póstumo para tus hijos — con tono cálido, nunca siniestro.
+**Free and open source.** Local-first personal legacy AI: capture your memories, phrases, and knowledge; let family talk with that presence later.
 
-## Qué incluye este MVP
+> Spanish README: [README.es.md](./README.es.md)
 
-- **Memorias locales**: crear, editar y eliminar recuerdos, frases, comentarios y conocimientos (guardados en el navegador).
-- **Chat**: conversación en español que usa esas memorias como contexto.
-- **Local-first**: motor preferido **Ollama** en `localhost`; **mock** si no hay modelo; API cloud solo como escape hatch.
-- **Exportar memorias** a JSON desde Ajustes (base para backup/herederos).
-- Interfaz en español, usable en escritorio y móvil.
+## Two apps
 
-## Cómo correrlo
+| App | Path | Purpose | Dev URL |
+| --- | --- | --- | --- |
+| **Training / Entrenamiento** | `apps/entrenamiento` | Capture & edit memories, configure local LLM, test chat | http://127.0.0.1:43127 |
+| **Consultation / Consulta** | `apps/consulta` | Heir-facing legacy interface — chat only (import JSON or shared disk store) | http://127.0.0.1:43128 |
+
+Shared logic lives in `packages/shared`.
+
+**Priority:** training + text chat first. Voice cloning, avatar, and OS kiosk mode come later.
+
+## Quick start
 
 ```bash
 npm install
-npm run dev
+npm run dev:entrenamiento   # training app
+npm run dev:consulta        # consultation app (another terminal)
 ```
 
-Abre [http://127.0.0.1:43127](http://127.0.0.1:43127).
+Optional local model: install [Ollama](https://ollama.com), pull a model (e.g. `ollama pull llama3.2`), keep the default provider in Training settings.
 
-Otros comandos:
+## Free to use · Donations
 
-```bash
-npm run build
-npm start
-npm run lint
-```
+LEGADO is free under the [MIT License](./LICENSE). If it helps you, you can support the project — see [DONATIONS.md](./DONATIONS.md) (link placeholder until the maintainer publishes PayPal/Ko-fi/etc.).
 
-## Privacidad
+## Documentation
 
-Las memorias y el historial de chat viven en `localStorage` de este navegador. No hay cuentas ni base de datos remota en este slice. Si configuras una API key, se guarda solo en el navegador y se envía desde tu máquina a la ruta local `/api/chat` (y de ahí al proveedor, si activas el modo API).
+| Topic | English | Español |
+| --- | --- | --- |
+| Product plan / architecture | [docs/en/plan.md](./docs/en/plan.md) | [docs/es/plan.md](./docs/es/plan.md) |
+| Local hardware guide | [docs/en/hardware.md](./docs/en/hardware.md) | [docs/es/equipo-local.md](./docs/es/equipo-local.md) |
+| Contributing | [docs/en/contributing.md](./docs/en/contributing.md) | [docs/es/contribuir.md](./docs/es/contribuir.md) |
+| Code of conduct | [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md) | — |
 
-## Stack
+## License
 
-Next.js, TypeScript, Tailwind CSS, shadcn/ui.
+[MIT](./LICENSE)

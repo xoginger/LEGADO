@@ -1,0 +1,15 @@
+{
+  "name": "@legado/shared",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./disk": "./src/disk-store.ts"
+  },
+  "dependencies": {
+    "cn": "^0.4.0"
+  }
+}
