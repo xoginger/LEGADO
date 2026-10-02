@@ -6,13 +6,19 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
 import { createId } from "@legado/shared";
-import type { ChatMessage, Memory, Settings } from "@legado/shared";
+import type {
+  ChatMessage,
+  LegadoProfile,
+  Memory,
+  Settings,
+} from "@legado/shared";
 import { LoaderCircle, SendHorizontal } from "lucide-react";
 
 type Props = {
   memories: Memory[];
   messages: ChatMessage[];
   settings: Settings;
+  profile?: LegadoProfile | null;
   onMessagesChange: (messages: ChatMessage[]) => void;
 };
 
@@ -20,6 +26,7 @@ export function ChatPanel({
   memories,
   messages,
   settings,
+  profile,
   onMessagesChange,
 }: Props) {
   const [input, setInput] = useState("");
@@ -61,7 +68,8 @@ export function ChatPanel({
             role: m.role,
             content: m.content,
           })),
-          personName: settings.personName,
+          personName: profile?.displayName || settings.personName,
+          profile: profile ?? undefined,
           provider: settings.provider,
           ollamaBaseUrl: settings.ollamaBaseUrl,
           ollamaModel: settings.ollamaModel,
@@ -112,9 +120,9 @@ export function ChatPanel({
           <p className="text-muted-foreground mt-1 text-sm leading-relaxed">
             Habla con la presencia de{" "}
             <span className="text-foreground/80 font-medium">
-              {settings.personName}
+              {profile?.displayName || settings.personName}
             </span>
-            , construida con las memorias guardadas.
+            , con el perfil y las memorias del legado.
           </p>
         </div>
         <Badge variant="outline" className="shrink-0 font-normal">

@@ -117,7 +117,7 @@ export function MemoriesPanel({ memories, onChange }: Props) {
             Memorias
           </h2>
           <p className="text-muted-foreground mt-1 text-sm leading-relaxed">
-            Recuerdos, frases, comentarios y conocimientos que alimentan la
+            Recuerdos, frases, fotos, eventos y conocimientos que alimentan la
             conversación.
           </p>
         </div>
@@ -197,8 +197,8 @@ export function MemoriesPanel({ memories, onChange }: Props) {
               {draft.id ? "Editar memoria" : "Nueva memoria"}
             </DialogTitle>
             <DialogDescription>
-              Guarda un recuerdo, una frase, un comentario o un conocimiento
-              para que el chat pueda usarlo.
+              Guarda un recuerdo, una frase, una foto, un evento o un
+              conocimiento para que el chat pueda usarlo.
             </DialogDescription>
           </DialogHeader>
 

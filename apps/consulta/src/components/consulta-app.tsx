@@ -17,16 +17,25 @@ import {
 } from "@/components/ui/dialog";
 import {
   applyTheme,
+  DEFAULT_PROFILE,
   loadMemories,
   loadMessages,
+  loadProfile,
   loadSettings,
   parseImport,
   saveMemories,
   saveMessages,
+  saveProfile,
   saveSettings,
   saveThemeId,
 } from "@legado/shared";
-import type { ChatMessage, Memory, Settings, ThemeId } from "@legado/shared";
+import type {
+  ChatMessage,
+  LegadoProfile,
+  Memory,
+  Settings,
+  ThemeId,
+} from "@legado/shared";
 import { DEFAULT_SETTINGS } from "@legado/shared";
 import { BookOpen, Palette, Upload } from "lucide-react";
 
@@ -34,6 +43,7 @@ async function persistDisk(patch: {
   memories?: Memory[];
   messages?: ChatMessage[];
   settings?: Settings;
+  profile?: LegadoProfile;
 }) {
   try {
     await fetch("/api/store", {
@@ -119,6 +129,7 @@ export function ConsultaApp() {
   const [memories, setMemories] = useState<Memory[]>([]);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [settings, setSettings] = useState<Settings>(DEFAULT_SETTINGS);
+  const [profile, setProfile] = useState<LegadoProfile>(DEFAULT_PROFILE);
   const [importError, setImportError] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -128,6 +139,7 @@ export function ConsultaApp() {
       const localMemories = loadMemories();
       const localMessages = loadMessages();
       const localSettings = loadSettings();
+      const localProfile = loadProfile();
       try {
         const res = await fetch("/api/store", { signal: controller.signal });
         if (res.ok) {
@@ -135,6 +147,7 @@ export function ConsultaApp() {
             memories?: Memory[];
             messages?: ChatMessage[];
             settings?: Settings;
+            profile?: LegadoProfile;
           };
           if (controller.signal.aborted) return;
           const memoriesNext =
@@ -150,12 +163,26 @@ export function ConsultaApp() {
               localSettings.themeId ??
               DEFAULT_SETTINGS.themeId,
           };
+          const profileNext = {
+            ...DEFAULT_PROFILE,
+            ...localProfile,
+            ...(disk.profile ?? {}),
+            displayName:
+              disk.profile?.displayName ||
+              localProfile.displayName ||
+              settingsNext.personName,
+          };
+          if (profileNext.displayName) {
+            settingsNext.personName = profileNext.displayName;
+          }
           setMemories(memoriesNext);
           setMessages(disk.messages ?? localMessages);
           setSettings(settingsNext);
+          setProfile(profileNext);
           saveMemories(memoriesNext);
           saveMessages(disk.messages ?? localMessages);
           saveSettings(settingsNext);
+          saveProfile(profileNext);
           applyTheme(settingsNext.themeId);
           setReady(true);
           return;
@@ -168,6 +195,7 @@ export function ConsultaApp() {
       setMemories(localMemories);
       setMessages(localMessages);
       setSettings(localSettings);
+      setProfile(localProfile);
       applyTheme(localSettings.themeId);
       setReady(true);
     })();
@@ -201,13 +229,26 @@ export function ConsultaApp() {
     }
     setMemories(data.memories);
     saveMemories(data.memories);
+    const profileNext: LegadoProfile = data.profile
+      ? { ...DEFAULT_PROFILE, ...data.profile }
+      : {
+          ...profile,
+          displayName: data.personName || profile.displayName,
+          updatedAt: new Date().toISOString(),
+        };
+    setProfile(profileNext);
+    saveProfile(profileNext);
     const nextSettings = {
       ...settings,
-      personName: data.personName || settings.personName,
+      personName: profileNext.displayName || data.personName || settings.personName,
     };
     setSettings(nextSettings);
     saveSettings(nextSettings);
-    void persistDisk({ memories: data.memories, settings: nextSettings });
+    void persistDisk({
+      memories: data.memories,
+      settings: nextSettings,
+      profile: profileNext,
+    });
   }
 
   if (!ready) {
@@ -245,8 +286,11 @@ export function ConsultaApp() {
             </div>
             <p className="mt-3 max-w-xl text-base leading-relaxed text-[var(--legado-ink)]/80 sm:text-lg">
               Habla con la presencia de{" "}
-              <span className="font-medium">{settings.personName}</span>. Aquí no
-              se editan memorias: solo se consulta el legado.
+              <span className="font-medium">
+                {profile.displayName || settings.personName}
+              </span>
+              . Aquí no se editan memorias: solo se consulta el legado (perfil
+              incluido).
             </p>
             <div className="mt-6 flex flex-wrap items-center gap-3">
               <input
@@ -290,6 +334,7 @@ export function ConsultaApp() {
             memories={memories}
             messages={messages}
             settings={settings}
+            profile={profile}
             onMessagesChange={updateMessages}
           />
         </div>

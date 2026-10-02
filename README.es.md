@@ -39,6 +39,7 @@ LEGADO es gratis bajo la [licencia MIT](./LICENSE). Si te ayuda, puedes apoyar e
 | Tema | Español | English |
 | --- | --- | --- |
 | **Cómo usar** (requisitos, setup, pasos, temas) | [docs/es/uso.md](./docs/es/uso.md) | [docs/en/usage.md](./docs/en/usage.md) |
+| Redes / perfil (import) | [docs/es/redes.md](./docs/es/redes.md) | [docs/en/social.md](./docs/en/social.md) |
 | Plan / arquitectura | [docs/es/plan.md](./docs/es/plan.md) | [docs/en/plan.md](./docs/en/plan.md) |
 | Guía de hardware local | [docs/es/equipo-local.md](./docs/es/equipo-local.md) | [docs/en/hardware.md](./docs/en/hardware.md) |
 | Contribuir | [docs/es/contribuir.md](./docs/es/contribuir.md) | [docs/en/contributing.md](./docs/en/contributing.md) |

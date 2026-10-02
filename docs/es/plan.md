@@ -82,19 +82,35 @@ Objetivo: **IA usable en texto** — guardar memorias y chatear en local, en esp
 
 ### Incluye
 
-1. **Memorias (CRUD local)** — recuerdo, frase, comentario, conocimiento; `localStorage`.
-2. **Chat texto** — contexto desde memorias; **Ollama** preferido; **mock** si no hay modelo; API cloud opcional.
-3. **Estados** — vacío, carga, error.
-4. **Responsive** — escritorio y móvil.
-5. **Preparación barata** — export JSON; ajustes de Ollama; layout que no rompa en fullscreen (sin lockdown).
+1. **Memorias (CRUD local)** — recuerdo, frase, comentario, conocimiento, foto, evento; `localStorage`.
+2. **Perfil + fuentes sociales** — Instagram, Facebook, X, Google Fotos, Apple Fotos; import por export/archivo (OAuth stub opcional). Ver [redes.md](./redes.md).
+3. **Chat texto** — contexto desde **perfil + memorias**; **Ollama** preferido; **mock** si no hay modelo; API cloud opcional.
+4. **Estados** — vacío, carga, error (también en cola de importación).
+5. **Responsive** — escritorio y móvil.
+6. **Preparación barata** — export JSON; ajustes de Ollama; layout que no rompa en fullscreen (sin lockdown).
 
 ### Fuera del MVP (explícito)
 
+- OAuth real contra Meta / X / Google (requiere secrets; no bloquea el import manual).
 - Voz clonada / TTS con su voz.
 - Avatar / retrato animado / talking head.
 - Modo quiosco / autoarranque / ocultar escritorio.
 - Auth titular vs heredero.
 - Cuentas, nube, DB remota, fine-tuning, app nativa.
+
+## Redes → perfil (decisión tomada)
+
+El perfil se alimenta también desde redes y álbumes. Fuentes confirmadas en UI **Perfil / Fuentes**:
+
+| Fuente | Import MVP | OAuth |
+| --- | --- | --- |
+| Instagram | ZIP/JSON Meta | Stub (`LEGADO_META_*`) |
+| Facebook | ZIP/JSON Meta (+ eventos) | Stub Meta |
+| X (Twitter) | JS/JSON/CSV/ZIP | Stub (`LEGADO_X_*`) |
+| Google Fotos | Takeout ZIP/JSON | Stub (`LEGADO_GOOGLE_*`) |
+| Apple Fotos | Carpeta/álbum/ZIP | Sin OAuth (sandbox macOS) |
+
+**Privacidad:** parseo local; OAuth choca con local-first → no es requisito. Guía: [redes.md](./redes.md).
 
 ## Después del MVP (roadmap)
 
@@ -184,19 +200,20 @@ Voz + avatar **suben** RAM/VRAM/disco vs solo chat. Detalle en [`equipo-local.md
 
 | Ruta | Rol |
 | --- | --- |
-| `apps/entrenamiento` | Plataforma de entrenamiento (primero): memorias + config + chat de prueba |
-| `apps/consulta` | Interfaz de consulta para hijos/familia (solo chat) |
-| `packages/shared` | Tipos, storage, ranking/mock, store en disco (`.legado-data/`) |
+| `apps/entrenamiento` | Plataforma de entrenamiento (primero) |
+| `apps/consulta` | Interfaz de consulta para herederos |
+| `packages/shared` | Código compartido + store en disco |
 
-Licencia MIT · uso gratuito · donativos vía **[Ko-fi](https://ko-fi.com/xoginger)** (Stripe) — ver `DONATIONS.md`.  
-Repo canónico: [https://github.com/xoginger/LEGADO](https://github.com/xoginger/LEGADO)
+Licencia MIT · uso gratuito · donativos: [https://ko-fi.com/xoginger](https://ko-fi.com/xoginger) (Ko-fi / Stripe).  
+Repo canónico: [https://github.com/xoginger/LEGADO](https://github.com/xoginger/LEGADO)  
+Docs en el repo: `README.md` (EN) + `README.es.md` (ES).
 
 ## Stack del primer slice
 
 - Next.js + TypeScript + Tailwind + shadcn/ui (npm workspaces)
-- Persistencia: `localStorage` + store en disco compartido
+- Persistencia: `localStorage` + `.legado-data/`
 - Chat: Ollama local (preferido) + mock + API cloud opcional
 
 ## Resumen
 
-**MVP = memorias locales + chat texto cálido (Ollama o mock) en dos apps (entrenamiento y consulta). Voz clonada, avatar, quiosco y roles con auth son fases siguientes y no frenan la IA usable.**
+**MVP = memorias locales + chat texto (entrenamiento + consulta). Voz, avatar, quiosco y auth de roles vienen después.**

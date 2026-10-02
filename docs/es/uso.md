@@ -108,9 +108,10 @@ Si el puerto está ocupado, cierra otros `next dev` o libera 43127/43128.
 ### Paso A — Entrenamiento primero
 
 1. Abre http://127.0.0.1:43127
-2. Crea **3–5 memorias** (frase, recuerdo, comentario, conocimiento).
-3. Abre el **chat** en la misma app y pregunta algo que solo esté en esas memorias.
-4. Si tienes Ollama: confirma respuestas con el modelo local. Si no: el **mock** usa el texto de tus memorias.
+2. Crea **3–5 memorias** (frase, recuerdo, comentario, conocimiento, foto o evento).
+3. (Opcional) En **Perfil / Fuentes**, edita el perfil e importa exports de redes/álbumes — ver [redes.md](./redes.md).
+4. Abre el **chat** en la misma app y pregunta algo que solo esté en esas memorias.
+5. Si tienes Ollama: confirma respuestas con el modelo local. Si no: el **mock** usa el texto de tus memorias.
 
 ### Paso B — Exportar
 
@@ -133,6 +134,7 @@ Cuando el selector de temas esté disponible en Entrenamiento/Consulta, elige el
 - [ ] Node 20+ e `npm install` OK  
 - [ ] Entrenamiento en `:43127`  
 - [ ] Memorias creadas + chat probado (mock u Ollama)  
+- [ ] (Opcional) Perfil / Fuentes: import de al menos una red o álbum  
 - [ ] Export JSON  
 - [ ] Consulta en `:43128` con import  
 - [ ] Todo offline (sin depender de nube ajena)
@@ -147,12 +149,14 @@ Cuando el selector de temas esté disponible en Entrenamiento/Consulta, elige el
 | Puerto ocupado | Cierra otros Next; confirma 43127 / 43128 |
 | Ollama no conecta | `curl http://127.0.0.1:11434` y ajustes en Entrenamiento |
 | Poco espacio en Mac | Clona en `/Volumes/XR/LEGADO` (ver arriba) |
+| Import de red vacío | Revisa que sea export oficial JSON/ZIP; guía en [redes.md](./redes.md) |
 
 ---
 
 ## Enlaces
 
 - Plan: [plan.md](./plan.md)
+- Redes / perfil: [redes.md](./redes.md)
 - Hardware / compra: [equipo-local.md](./equipo-local.md)
 - Contribuir: [contribuir.md](./contribuir.md)
 - Donativos: [../../DONATIONS.md](../../DONATIONS.md) · [Ko-fi](https://ko-fi.com/xoginger)

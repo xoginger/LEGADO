@@ -20,16 +20,18 @@ LEGADO is a personal AI trained on someone’s knowledge, memories, phrases, and
 
 | App | Role |
 | --- | --- |
-| `apps/entrenamiento` | Training: CRUD memories, configure Ollama/mock, test chat |
+| `apps/entrenamiento` | Training: CRUD memories, profile/sources import, configure Ollama/mock, test chat |
 | `apps/consulta` | Consultation: heirs chat with the legacy (no memory editing) |
-| `packages/shared` | Shared types, storage, ranking/mock chat, disk store |
+| `packages/shared` | Shared types, storage, ranking/mock chat, social import, disk store |
 
 ## MVP (this slice)
 
 - Local memories + text chat (Ollama preferred, mock fallback)
+- **Profile + social/album sources** (Instagram, Facebook, X, Google Photos, Apple Photos) — file/ZIP/folder import; OAuth stubs optional (no secrets required). See [social.md](./social.md).
+- Chat context includes **profile + memories** (fotos, frases, eventos)
 - Export/import JSON; optional shared disk store under `.legado-data/`
-- Empty / loading / error states; desktop + mobile
-- **Out of scope:** OS kiosk lockdown, heir auth, voice clone, avatar, cloud accounts
+- Empty / loading / error states (including import queue); desktop + mobile
+- **Out of scope:** live OAuth against Meta/X/Google, OS kiosk lockdown, heir auth, voice clone, avatar, cloud accounts
 
 ## Later phases (summary)
 

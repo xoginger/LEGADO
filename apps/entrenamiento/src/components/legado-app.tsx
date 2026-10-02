@@ -3,26 +3,45 @@
 import { useEffect, useState } from "react";
 import { BrandMark } from "@/components/brand-mark";
 import { ChatPanel } from "@/components/chat-panel";
+import { FuentesPanel } from "@/components/fuentes-panel";
 import { MemoriesPanel } from "@/components/memories-panel";
 import { SettingsDialog } from "@/components/settings-dialog";
 import { ThemeProvider } from "@/components/theme-provider";
 import {
   applyTheme,
+  defaultImportSourceStates,
+  DEFAULT_PROFILE,
+  loadImportJobs,
+  loadImportSources,
   loadMemories,
   loadMessages,
+  loadProfile,
   loadSettings,
+  saveImportJobs,
+  saveImportSources,
   saveMemories,
   saveMessages,
+  saveProfile,
   saveSettings,
   saveThemeId,
 } from "@legado/shared";
-import type { ChatMessage, Memory, Settings } from "@legado/shared";
+import type {
+  ChatMessage,
+  ImportJob,
+  ImportSourceState,
+  LegadoProfile,
+  Memory,
+  Settings,
+} from "@legado/shared";
 import { DEFAULT_SETTINGS } from "@legado/shared";
 
 async function persistDisk(patch: {
   memories?: Memory[];
   messages?: ChatMessage[];
   settings?: Settings;
+  profile?: LegadoProfile;
+  importSources?: ImportSourceState[];
+  importJobs?: ImportJob[];
 }) {
   try {
     await fetch("/api/store", {
@@ -40,7 +59,12 @@ export function LegadoApp() {
   const [memories, setMemories] = useState<Memory[]>([]);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [settings, setSettings] = useState<Settings>(DEFAULT_SETTINGS);
-  const [tab, setTab] = useState<"memorias" | "chat">("memorias");
+  const [profile, setProfile] = useState<LegadoProfile>(DEFAULT_PROFILE);
+  const [importSources, setImportSources] = useState<ImportSourceState[]>(
+    defaultImportSourceStates(),
+  );
+  const [importJobs, setImportJobs] = useState<ImportJob[]>([]);
+  const [tab, setTab] = useState<"memorias" | "fuentes" | "chat">("memorias");
 
   useEffect(() => {
     const controller = new AbortController();
@@ -49,6 +73,9 @@ export function LegadoApp() {
       const localMemories = loadMemories();
       const localMessages = loadMessages();
       const localSettings = loadSettings();
+      const localProfile = loadProfile();
+      const localSources = loadImportSources();
+      const localJobs = loadImportJobs();
       try {
         const res = await fetch("/api/store", { signal: controller.signal });
         if (res.ok) {
@@ -56,6 +83,9 @@ export function LegadoApp() {
             memories?: Memory[];
             messages?: ChatMessage[];
             settings?: Settings;
+            profile?: LegadoProfile;
+            importSources?: ImportSourceState[];
+            importJobs?: ImportJob[];
           };
           if (controller.signal.aborted) return;
           const memoriesNext =
@@ -72,12 +102,39 @@ export function LegadoApp() {
               localSettings.themeId ??
               DEFAULT_SETTINGS.themeId,
           };
+          const profileNext = {
+            ...DEFAULT_PROFILE,
+            ...localProfile,
+            ...(disk.profile ?? {}),
+            displayName:
+              disk.profile?.displayName ||
+              localProfile.displayName ||
+              settingsNext.personName,
+          };
+          // Sync personName ↔ profile displayName
+          if (
+            profileNext.displayName &&
+            profileNext.displayName !== settingsNext.personName
+          ) {
+            settingsNext.personName = profileNext.displayName;
+          }
+          const sourcesNext =
+            disk.importSources && disk.importSources.length > 0
+              ? disk.importSources
+              : localSources;
+          const jobsNext = disk.importJobs ?? localJobs;
           setMemories(memoriesNext);
           setMessages(messagesNext);
           setSettings(settingsNext);
+          setProfile(profileNext);
+          setImportSources(sourcesNext);
+          setImportJobs(jobsNext);
           saveMemories(memoriesNext);
           saveMessages(messagesNext);
           saveSettings(settingsNext);
+          saveProfile(profileNext);
+          saveImportSources(sourcesNext);
+          saveImportJobs(jobsNext);
           applyTheme(settingsNext.themeId);
           setReady(true);
           return;
@@ -90,6 +147,9 @@ export function LegadoApp() {
       setMemories(localMemories);
       setMessages(localMessages);
       setSettings(localSettings);
+      setProfile(localProfile);
+      setImportSources(localSources);
+      setImportJobs(localJobs);
       applyTheme(localSettings.themeId);
       setReady(true);
     })();
@@ -116,7 +176,40 @@ export function LegadoApp() {
     saveSettings(next);
     saveThemeId(next.themeId);
     applyTheme(next.themeId);
+    // Keep profile name in sync when settings name changes
+    if (next.personName !== profile.displayName) {
+      const p = {
+        ...profile,
+        displayName: next.personName,
+        updatedAt: new Date().toISOString(),
+      };
+      setProfile(p);
+      saveProfile(p);
+      void persistDisk({ settings: next, profile: p });
+      return;
+    }
     void persistDisk({ settings: next });
+  }
+
+  function updateProfile(next: LegadoProfile) {
+    setProfile(next);
+    saveProfile(next);
+    const settingsNext = { ...settings, personName: next.displayName };
+    setSettings(settingsNext);
+    saveSettings(settingsNext);
+    void persistDisk({ profile: next, settings: settingsNext });
+  }
+
+  function updateSources(next: ImportSourceState[]) {
+    setImportSources(next);
+    saveImportSources(next);
+    void persistDisk({ importSources: next });
+  }
+
+  function updateJobs(next: ImportJob[]) {
+    setImportJobs(next);
+    saveImportJobs(next);
+    void persistDisk({ importJobs: next });
   }
 
   if (!ready) {
@@ -153,8 +246,9 @@ export function LegadoApp() {
               </div>
             </div>
             <p className="mt-3 max-w-xl text-base leading-relaxed text-[var(--legado-ink)]/80 sm:text-lg">
-              Captura recuerdos, frases y conocimientos. Prueba la conversación
-              antes de compartir el legado con tus hijos.
+              Captura recuerdos, frases y conocimientos. Alimenta el perfil
+              desde redes y álbumes. Prueba la conversación antes de compartir
+              el legado.
             </p>
             <div className="mt-6 flex flex-wrap items-center gap-3">
               <SettingsDialog
@@ -163,7 +257,7 @@ export function LegadoApp() {
                 onSave={updateSettings}
               />
               <span className="text-muted-foreground text-xs sm:text-sm">
-                {memories.length}{" "}
+                {profile.displayName} · {memories.length}{" "}
                 {memories.length === 1 ? "memoria" : "memorias"} · local-first
               </span>
             </div>
@@ -171,35 +265,71 @@ export function LegadoApp() {
         </header>
 
         <div className="mb-4 flex gap-2 lg:hidden">
-          <button
-            type="button"
-            className={`legado-tab flex-1 ${tab === "memorias" ? "is-active" : ""}`}
-            onClick={() => setTab("memorias")}
-          >
-            Memorias
-          </button>
-          <button
-            type="button"
-            className={`legado-tab flex-1 ${tab === "chat" ? "is-active" : ""}`}
-            onClick={() => setTab("chat")}
-          >
-            Conversar
-          </button>
+          {(
+            [
+              ["memorias", "Memorias"],
+              ["fuentes", "Perfil"],
+              ["chat", "Conversar"],
+            ] as const
+          ).map(([id, label]) => (
+            <button
+              key={id}
+              type="button"
+              className={`legado-tab flex-1 ${tab === id ? "is-active" : ""}`}
+              onClick={() => setTab(id)}
+            >
+              {label}
+            </button>
+          ))}
         </div>
 
-        <div className="grid min-h-0 flex-1 gap-6 lg:grid-cols-2">
+        <div className="mb-4 hidden gap-2 lg:flex">
+          {(
+            [
+              ["memorias", "Memorias"],
+              ["fuentes", "Perfil / Fuentes"],
+              ["chat", "Conversar"],
+            ] as const
+          ).map(([id, label]) => (
+            <button
+              key={id}
+              type="button"
+              className={`legado-tab ${tab === id ? "is-active" : ""}`}
+              onClick={() => setTab(id)}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+
+        <div className="grid min-h-0 flex-1 gap-6">
           <div
-            className={`min-h-[28rem] ${tab === "memorias" ? "block" : "hidden"} lg:block`}
+            className={`min-h-[28rem] ${tab === "memorias" ? "block" : "hidden"}`}
           >
             <MemoriesPanel memories={memories} onChange={updateMemories} />
           </div>
           <div
-            className={`min-h-[28rem] ${tab === "chat" ? "block" : "hidden"} lg:block`}
+            className={`min-h-[28rem] ${tab === "fuentes" ? "block" : "hidden"}`}
+          >
+            <FuentesPanel
+              profile={profile}
+              sources={importSources}
+              jobs={importJobs}
+              memories={memories}
+              onProfileChange={updateProfile}
+              onSourcesChange={updateSources}
+              onJobsChange={updateJobs}
+              onMemoriesChange={updateMemories}
+            />
+          </div>
+          <div
+            className={`min-h-[28rem] ${tab === "chat" ? "block" : "hidden"}`}
           >
             <ChatPanel
               memories={memories}
               messages={messages}
               settings={settings}
+              profile={profile}
               onMessagesChange={updateMessages}
             />
           </div>
