@@ -83,7 +83,7 @@ Objetivo: **IA usable en texto** — guardar memorias y chatear en local, en esp
 ### Incluye
 
 1. **Memorias (CRUD local)** — recuerdo, frase, comentario, conocimiento, foto, evento; `localStorage`.
-2. **Perfil + fuentes sociales** — Instagram, Facebook, X, Google Fotos, Apple Fotos; **Importar archivo/carpeta** es el camino real (OAuth = «próximamente», sin fingir conexión). Ver [redes.md](./redes.md).
+2. **Perfil + fuentes sociales** — Instagram, Facebook, X, Google Fotos, Apple Fotos; camino oficial = **Importar ZIP/JSON/CSV/carpeta** (export→import). OAuth aplazado. Ver [redes.md](./redes.md).
 3. **Chat texto** — contexto desde **perfil + memorias**; **Ollama** preferido; **mock** si no hay modelo; API cloud opcional.
 4. **Estados** — vacío, carga, error (también en cola de importación).
 5. **Responsive** — escritorio y móvil.
@@ -91,7 +91,7 @@ Objetivo: **IA usable en texto** — guardar memorias y chatear en local, en esp
 
 ### Fuera del MVP (explícito)
 
-- OAuth real contra Meta / X / Google (requiere secrets; no bloquea el import manual).
+- OAuth real contra Meta / X / Google (**aplazado**; el titular usa exports). Detalle: [oauth-fuentes.md](./oauth-fuentes.md).
 - Voz clonada / TTS con su voz.
 - Avatar / retrato animado / talking head.
 - Modo quiosco / autoarranque / ocultar escritorio.
@@ -100,17 +100,17 @@ Objetivo: **IA usable en texto** — guardar memorias y chatear en local, en esp
 
 ## Redes → perfil (decisión tomada)
 
-El perfil se alimenta también desde redes y álbumes. Fuentes confirmadas en UI **Perfil / Fuentes**:
+El perfil se alimenta desde redes y álbumes **importando la descarga oficial**. Fuentes en UI **Perfil / Fuentes**:
 
-| Fuente | Import MVP | «Conectar» |
-| --- | --- | --- |
-| Instagram | ZIP/JSON Meta | Próximamente (no finge login) |
-| Facebook | ZIP/JSON Meta (+ eventos) | Próximamente |
-| X (Twitter) | JS/JSON/CSV/ZIP | Próximamente |
-| Google Fotos | Takeout ZIP/JSON | Próximamente |
-| Apple Fotos | Carpeta/álbum/ZIP | No aplica (solo local) |
+| Fuente | Camino oficial |
+| --- | --- |
+| Instagram | ZIP/JSON Meta → Importar archivo |
+| Facebook | ZIP/JSON Meta (+ eventos) → Importar archivo |
+| X (Twitter) | JS/JSON/CSV/ZIP → Importar archivo |
+| Google Fotos | Takeout ZIP/JSON → Importar archivo |
+| Apple Fotos | Carpeta/álbum/ZIP → Importar carpeta |
 
-**Privacidad:** parseo local; OAuth choca con local-first → no es requisito ni se simula. Guía: [redes.md](./redes.md).
+**Privacidad:** parseo local. OAuth automático = **futuro opcional aplazado** (no roadmap activo). Guías: [redes.md](./redes.md) · [oauth-fuentes.md](./oauth-fuentes.md).
 
 ## Después del MVP (roadmap)
 
@@ -118,6 +118,10 @@ El perfil se alimenta también desde redes y álbumes. Fuentes confirmadas en UI
 
 - Export/import robusto; SQLite en disco; embeddings locales.
 - (Opcional) pulir fullscreen; **aún no** lockdown OS ni voz/avatar.
+
+### OAuth / conexión automática — APLAZADO
+
+**Decisión (2026-10):** el titular alimenta el perfil con **exports**, no con OAuth. Queda documentado como referencia en [oauth-fuentes.md](./oauth-fuentes.md) por si algún día se retoma (BYO apps + proxy local; límites honestos por plataforma). **No bloquea ni está programado.**
 
 ### Fase 3 — Voz clonada + avatar (presencia)
 
@@ -176,6 +180,7 @@ Voz + avatar **suben** RAM/VRAM/disco vs solo chat. Detalle en [`equipo-local.md
 | LLM | Ollama/MLX → mock |
 | Idioma | Español |
 | Prioridad entrega | **IA usable** (memorias + chat texto) |
+| Fuentes / redes | **Export → import** (OAuth aplazado) |
 | Quiosco | Fase posterior |
 | Clonación voz/avatar | Local-first preferido; híbrido solo si hace falta |
 | Hardware | Parte de cero; MXN; sin tope → **Recomendado** para texto; holgura extra si se planea voz+avatar |
@@ -216,4 +221,4 @@ Docs en el repo: `README.md` (EN) + `README.es.md` (ES).
 
 ## Resumen
 
-**MVP = memorias locales + chat texto (entrenamiento + consulta). Voz, avatar, quiosco y auth de roles vienen después.**
+**MVP = memorias locales + perfil/fuentes (export→import) + chat texto. OAuth aplazado. Voz, avatar, quiosco y auth de roles vienen después.**
