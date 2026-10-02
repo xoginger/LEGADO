@@ -4,6 +4,14 @@ import { useMemo, useRef, useState } from "react";
 import JSZip from "jszip";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -16,6 +24,7 @@ import {
   parseSocialExport,
   type ImportJob,
   type ImportSourceId,
+  type ImportSourceMeta,
   type ImportSourceState,
   type LegadoProfile,
   type Memory,
@@ -26,7 +35,6 @@ import {
   FolderOpen,
   Link2,
   LoaderCircle,
-  Unplug,
   Upload,
 } from "lucide-react";
 
@@ -41,12 +49,27 @@ type Props = {
   onMemoriesChange: (memories: Memory[]) => void;
 };
 
-const STATUS_LABEL: Record<ImportSourceState["status"], string> = {
-  disconnected: "Sin conectar",
-  mock_connected: "Conectado (demo)",
-  oauth_ready: "OAuth listo",
-  connected: "Conectado",
-};
+/** Etiqueta honesta: nunca «conectado a …» (OAuth es stub). */
+function sourceStatusLabel(state: ImportSourceState): string {
+  if (state.itemsImported > 0 || state.lastImportAt) {
+    return "Importado";
+  }
+  // Estados legacy de la demo «Conectar» → no fingir conexión
+  if (
+    state.status === "mock_connected" ||
+    state.status === "connected" ||
+    state.status === "oauth_ready"
+  ) {
+    return "Listo para importar";
+  }
+  return "Sin importar";
+}
+
+function importButtonLabel(meta: ImportSourceMeta): string {
+  return meta.authMode === "folder_export"
+    ? "Importar carpeta"
+    : "Importar archivo";
+}
 
 async function filesFromZip(file: File): Promise<TextFileMap> {
   const zip = await JSZip.loadAsync(file);
@@ -112,6 +135,9 @@ export function FuentesPanel({
   const [busy, setBusy] = useState(false);
   const [banner, setBanner] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [connectModalId, setConnectModalId] = useState<ImportSourceId | null>(
+    null,
+  );
   const fileRef = useRef<HTMLInputElement>(null);
   const folderRef = useRef<HTMLInputElement>(null);
   const photoRef = useRef<HTMLInputElement>(null);
@@ -124,6 +150,10 @@ export function FuentesPanel({
     const evento = memories.filter((m) => m.kind === "evento").length;
     return { total: memories.length, foto, frase, evento };
   }, [memories]);
+
+  const connectModalMeta = connectModalId
+    ? getImportSourceMeta(connectModalId)
+    : undefined;
 
   function saveProfileFields() {
     setSavingProfile(true);
@@ -172,28 +202,11 @@ export function FuentesPanel({
     );
   }
 
-  function mockConnect(id: ImportSourceId) {
-    const meta = getImportSourceMeta(id);
-    setSourceStatus(id, {
-      status: "mock_connected",
-      accountLabel: `demo@${meta?.shortLabel.toLowerCase() || id}.local`,
-    });
-    setBanner(
-      `${meta?.label ?? id}: conexión demo. El import real sigue siendo por archivo (local-first).`,
-    );
-  }
-
-  function disconnect(id: ImportSourceId) {
-    setSourceStatus(id, {
-      status: "disconnected",
-      accountLabel: "",
-    });
-  }
-
   function openImport(id: ImportSourceId) {
     setActiveSource(id);
     setError(null);
     setBanner(null);
+    setConnectModalId(null);
     const meta = getImportSourceMeta(id);
     if (meta?.authMode === "folder_export") {
       folderRef.current?.click();
@@ -268,17 +281,13 @@ export function FuentesPanel({
         error: null,
       };
       onJobsChange([done, ...jobs]);
+      const prev = sources.find((s) => s.id === sourceId);
       setSourceStatus(sourceId, {
         lastImportAt: done.finishedAt,
-        itemsImported:
-          (sources.find((s) => s.id === sourceId)?.itemsImported ?? 0) + created,
-        status:
-          sources.find((s) => s.id === sourceId)?.status === "disconnected"
-            ? "mock_connected"
-            : sources.find((s) => s.id === sourceId)?.status ?? "mock_connected",
-        accountLabel:
-          sources.find((s) => s.id === sourceId)?.accountLabel ||
-          `import:${fileName}`,
+        itemsImported: (prev?.itemsImported ?? 0) + created,
+        // No fingir OAuth: el estado útil es el import, no «conectado».
+        status: "disconnected",
+        accountLabel: `import:${fileName}`,
       });
       setBanner(
         `Importados ${created} ítems de ${items.length} detectados → memorias del perfil.`,
@@ -309,9 +318,9 @@ export function FuentesPanel({
           Perfil / Fuentes
         </h2>
         <p className="text-muted-foreground mt-1 text-sm leading-relaxed">
-          Crece el perfil del legado con fotos, frases y eventos. Todo queda en
-          este equipo (local-first). OAuth es opcional y no bloquea el import
-          por archivo.
+          Crece el perfil del legado con fotos, frases y eventos importando el
+          export oficial de cada red. Todo queda en este equipo (local-first).
+          La conexión OAuth aún no está disponible.
         </p>
       </div>
 
@@ -388,11 +397,15 @@ export function FuentesPanel({
         </div>
       </div>
 
-      {/* Conectores */}
+      {/* Fuentes: import principal */}
       <div>
-        <h3 className="font-heading mb-3 text-lg text-[var(--legado-ink)]">
+        <h3 className="font-heading mb-1 text-lg text-[var(--legado-ink)]">
           Redes y álbumes
         </h3>
+        <p className="text-muted-foreground mb-3 text-xs leading-relaxed">
+          Acción principal: importar el export oficial (ZIP, JSON o carpeta).
+          «Conectar» es solo un aviso de que OAuth llega después.
+        </p>
         <ul className="grid gap-3 sm:grid-cols-2">
           {IMPORT_SOURCES.map((meta) => {
             const state = sources.find((s) => s.id === meta.id) ?? {
@@ -403,6 +416,7 @@ export function FuentesPanel({
               itemsImported: 0,
             };
             const importing = busy && activeSource === meta.id;
+            const showsOauthSoon = meta.authMode === "oauth_stub";
             return (
               <li
                 key={meta.id}
@@ -418,57 +432,28 @@ export function FuentesPanel({
                     </p>
                   </div>
                   <Badge variant="secondary" className="shrink-0 font-normal">
-                    {STATUS_LABEL[state.status]}
+                    {sourceStatusLabel(state)}
                   </Badge>
                 </div>
-                {state.accountLabel ? (
+                {state.itemsImported > 0 || state.lastImportAt ? (
                   <p className="text-muted-foreground mt-2 truncate text-xs">
-                    {state.accountLabel}
                     {state.itemsImported
-                      ? ` · ${state.itemsImported} importados`
+                      ? `${state.itemsImported} ítems en memorias`
+                      : "Último import registrado"}
+                    {state.accountLabel?.startsWith("import:")
+                      ? ` · ${state.accountLabel.replace(/^import:/, "")}`
                       : ""}
                   </p>
                 ) : null}
-                <p className="text-muted-foreground mt-2 text-[11px] leading-relaxed">
-                  {meta.exportHint}
-                </p>
-                {meta.oauthEnvVars?.length ? (
-                  <p className="text-muted-foreground mt-1 text-[10px]">
-                    OAuth (opcional): {meta.oauthEnvVars.join(", ")} — sin
-                    secrets el MVP usa export/archivo.
+                <div className="mt-3 rounded-xl border border-[var(--legado-line)]/80 bg-[var(--legado-mist)]/40 px-3 py-2">
+                  <p className="text-[11px] font-medium text-[var(--legado-ink)]">
+                    Cómo pedir el export
                   </p>
-                ) : (
-                  <p className="text-muted-foreground mt-1 text-[10px]">
-                    Solo import de carpeta/álbum (sin OAuth; sandbox macOS
-                    intacto).
+                  <p className="text-muted-foreground mt-1 text-[11px] leading-relaxed">
+                    {meta.exportHint}
                   </p>
-                )}
+                </div>
                 <div className="mt-3 flex flex-wrap gap-2">
-                  {state.status === "disconnected" ? (
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className="gap-1.5"
-                      onClick={() => mockConnect(meta.id)}
-                      disabled={busy}
-                    >
-                      <Link2 className="size-3.5" />
-                      {meta.authMode === "folder_export"
-                        ? "Marcar listo"
-                        : "Conectar (demo)"}
-                    </Button>
-                  ) : (
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      className="gap-1.5"
-                      onClick={() => disconnect(meta.id)}
-                      disabled={busy}
-                    >
-                      <Unplug className="size-3.5" />
-                      Desconectar
-                    </Button>
-                  )}
                   <Button
                     size="sm"
                     className="gap-1.5"
@@ -482,8 +467,31 @@ export function FuentesPanel({
                     ) : (
                       <Upload className="size-3.5" />
                     )}
-                    Importar
+                    {importButtonLabel(meta)}
                   </Button>
+                  {showsOauthSoon ? (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="gap-1.5"
+                      onClick={() => setConnectModalId(meta.id)}
+                      disabled={busy}
+                    >
+                      <Link2 className="size-3.5" />
+                      Conectar (próximamente)
+                    </Button>
+                  ) : (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="gap-1.5"
+                      disabled
+                      title="Apple Fotos no usa OAuth; importa la carpeta o el ZIP exportado."
+                    >
+                      <Link2 className="size-3.5" />
+                      Sin conexión online
+                    </Button>
+                  )}
                 </div>
               </li>
             );
@@ -511,6 +519,68 @@ export function FuentesPanel({
         }}
       />
 
+      <Dialog
+        open={connectModalId !== null}
+        onOpenChange={(open) => {
+          if (!open) setConnectModalId(null);
+        }}
+      >
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>
+              Conectar {connectModalMeta?.label ?? "fuente"} (próximamente)
+            </DialogTitle>
+            <DialogDescription>
+              LEGADO aún no inicia sesión en {connectModalMeta?.label ?? "esta red"}.
+              No hay OAuth real en este equipo: un clic aquí no vincula tu cuenta.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-2 text-sm text-[var(--legado-ink)]/90">
+            <p>
+              Para alimentar el perfil ahora, pide el{" "}
+              <strong className="font-medium">export oficial</strong> y usa{" "}
+              <strong className="font-medium">
+                {connectModalMeta
+                  ? importButtonLabel(connectModalMeta)
+                  : "Importar archivo"}
+              </strong>
+              .
+            </p>
+            {connectModalMeta ? (
+              <p className="text-muted-foreground text-xs leading-relaxed">
+                {connectModalMeta.exportHint}
+              </p>
+            ) : null}
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setConnectModalId(null)}
+            >
+              Entendido
+            </Button>
+            <Button
+              size="sm"
+              className="gap-1.5"
+              disabled={!connectModalId || busy}
+              onClick={() => {
+                if (connectModalId) openImport(connectModalId);
+              }}
+            >
+              {connectModalMeta?.authMode === "folder_export" ? (
+                <FolderOpen className="size-3.5" />
+              ) : (
+                <Upload className="size-3.5" />
+              )}
+              {connectModalMeta
+                ? importButtonLabel(connectModalMeta)
+                : "Importar"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       {/* Cola */}
       <div className="min-h-0 flex-1">
         <h3 className="font-heading mb-3 text-lg text-[var(--legado-ink)]">
@@ -522,8 +592,12 @@ export function FuentesPanel({
               Sin importaciones aún
             </p>
             <p className="text-muted-foreground mx-auto mt-2 max-w-md text-sm leading-relaxed">
-              Conecta una fuente (demo) o importa un ZIP/JSON/carpeta de export
-              oficial. Los ítems se normalizan a memorias: frase, foto o evento.
+              Elige una fuente y usa{" "}
+              <span className="text-[var(--legado-ink)]">Importar archivo</span>{" "}
+              o{" "}
+              <span className="text-[var(--legado-ink)]">Importar carpeta</span>{" "}
+              con el export oficial. Los ítems se normalizan a memorias: frase,
+              foto o evento.
             </p>
           </div>
         ) : (

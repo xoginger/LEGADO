@@ -1,6 +1,6 @@
 # Social sources & profile — feeding the legacy
 
-How to connect social sources and photo libraries to grow the **profile** and **knowledge base** (memories), always **local-first**.
+How to use social sources and photo libraries to grow the **profile** and **knowledge base** (memories), always **local-first**.
 
 ## What gets imported
 
@@ -17,7 +17,7 @@ Everything normalizes to local memories (`localStorage` + `.legado-data/`). **Co
 | Data | Where |
 | --- | --- |
 | Profile (name, bio, photo) | `legado.profile.v1` + disk |
-| Connector state | `legado.importSources.v1` |
+| Source state | `legado.importSources.v1` |
 | Import queue | `legado.importJobs.v1` |
 | Resulting memories | Same as the rest of the legacy |
 
@@ -27,13 +27,13 @@ No third-party cloud is the home for this data: exports are read **on the browse
 
 These five confirmed sources always appear in Training → **Perfil / Fuentes**:
 
-| Source | MVP import (no secrets) | OAuth |
+| Source | Usable path today | “Connect” |
 | --- | --- | --- |
-| **Instagram** | Meta data download ZIP/JSON | Stub — `LEGADO_META_APP_ID`, `LEGADO_META_APP_SECRET` |
-| **Facebook** | Meta export ZIP/JSON (posts + events) | Same Meta stub |
-| **X (Twitter)** | X archive (JS/JSON/CSV/ZIP) | Stub — `LEGADO_X_CLIENT_ID`, `LEGADO_X_CLIENT_SECRET` |
-| **Google Photos** | Google Takeout (ZIP + metadata JSON) | Stub — `LEGADO_GOOGLE_CLIENT_ID`, `LEGADO_GOOGLE_CLIENT_SECRET` |
-| **Apple Photos** | Exported album/folder or ZIP (no OAuth) | N/A (macOS sandbox untouched) |
+| **Instagram** | **Import file** (Meta data download ZIP/JSON) | Coming soon (modal; does not link an account) |
+| **Facebook** | **Import file** (Meta export ZIP/JSON: posts + events) | Coming soon (modal; does not link an account) |
+| **X (Twitter)** | **Import file** (X archive JS/JSON/CSV/ZIP) | Coming soon (modal; does not link an account) |
+| **Google Photos** | **Import file** (Google Takeout ZIP + JSON) | Coming soon (modal; does not link an account) |
+| **Apple Photos** | **Import folder** / ZIP (export from Photos on Mac) | N/A (local only; macOS sandbox untouched) |
 
 ### Official export tips
 
@@ -43,11 +43,14 @@ These five confirmed sources always appear in Training → **Perfil / Fuentes**:
 4. **Google Photos:** [Google Takeout](https://takeout.google.com) → Google Photos.
 5. **Apple Photos (Mac):** select album → File → Export → Export Unmodified Original (folder or ZIP). Optional: `manifest.json` with `assets[]`.
 
-### Demo connect vs real OAuth
+Each source card in the UI shows a short **How to request the export** block with the same tip.
 
-- **Connect (demo)** marks the source connected locally to show the flow (no tokens).
-- **Import** always works via file/folder — **does not block** if secrets are missing.
-- Real OAuth is documented and stubbed; when env vars exist, status can become “OAuth ready”. The MVP does not call Meta/X/Google.
+### Honesty: no fake OAuth
+
+- **Import file / Import folder** is the primary action and the only path that feeds memories today.
+- **Connect (coming soon)** opens a modal explaining there is **no** real login: you need the official export. It does **not** mark the source as “connected to Instagram” (or FB/X/Google).
+- UI statuses: **Not imported** · **Ready to import** (legacy demo state) · **Imported** (after a successful import). Never “connected to …”.
+- Real OAuth stays documented via optional env vars; the MVP **does not** call Meta/X/Google. Missing secrets must not invent a connection.
 
 ## Privacy (OAuth tension)
 
@@ -56,7 +59,7 @@ Meta, X, and Google APIs require app registration and often route traffic throug
 LEGADO prioritizes:
 
 1. Official export → local parse → memories.
-2. OAuth only as an optional upgrade (never an MVP requirement).
+2. OAuth only as a future upgrade (never an MVP requirement).
 
 The profile photo is stored as a local data URL; it is not uploaded to any LEGADO service.
 
@@ -65,7 +68,7 @@ The profile photo is stored as a local data URL; it is not uploaded to any LEGAD
 1. Start Training: `npm run dev:entrenamiento` → http://127.0.0.1:43127  
 2. Open **Perfil / Fuentes**.  
 3. Edit name/bio/photo.  
-4. On a source: optional **Connect (demo)** → **Import** ZIP/JSON/folder.  
+4. On a source: read **How to request the export** → **Import file** or **Import folder**.  
 5. Check the **queue** (empty / loading / error / done).  
 6. Open **Memorias** or **Conversar**: the enriched profile shapes chat context.
 
@@ -73,7 +76,7 @@ The profile photo is stored as a local data URL; it is not uploaded to any LEGAD
 
 Repo file: `docs/fixtures/social-sample.json` — generic LEGADO format (`items[]` with `kind`: `frase` | `foto` | `evento`). Import it via any JSON-accepting source (e.g. Instagram).
 
-## Optional environment variables
+## Optional environment variables (future)
 
 ```bash
 LEGADO_META_APP_ID=
@@ -84,7 +87,7 @@ LEGADO_GOOGLE_CLIENT_ID=
 LEGADO_GOOGLE_CLIENT_SECRET=
 ```
 
-Without them the app remains fully usable with manual import.
+Without them the app remains fully usable with manual import. Having them does **not** enable OAuth in this MVP.
 
 ## Related
 
