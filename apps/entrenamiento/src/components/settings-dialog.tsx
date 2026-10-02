@@ -20,14 +20,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { downloadExport, buildExport } from "@legado/shared";
+import { ThemePicker } from "@/components/theme-picker";
+import { downloadExport, buildExport, applyTheme } from "@legado/shared";
 import {
   LLM_PROVIDER_LABELS,
   type LlmProvider,
   type Memory,
   type Settings,
 } from "@legado/shared";
-import { Settings2 } from "lucide-react";
+import { BookOpen, Settings2 } from "lucide-react";
 
 type Props = {
   settings: Settings;
@@ -43,15 +44,25 @@ export function SettingsDialog({ settings, memories, onSave }: Props) {
     if (open) setDraft(settings);
   }, [open, settings]);
 
+  useEffect(() => {
+    if (open) applyTheme(draft.themeId);
+  }, [open, draft.themeId]);
+
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog
+      open={open}
+      onOpenChange={(next) => {
+        setOpen(next);
+        if (!next) applyTheme(settings.themeId);
+      }}
+    >
       <DialogTrigger
         render={<Button variant="outline" size="sm" className="gap-2" />}
       >
         <Settings2 className="size-4" />
         Ajustes
       </DialogTrigger>
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>Ajustes del legado</DialogTitle>
           <DialogDescription>
@@ -70,6 +81,14 @@ export function SettingsDialog({ settings, memories, onSave }: Props) {
                 setDraft((s) => ({ ...s, personName: e.target.value }))
               }
               placeholder="Ej. Xocotzin"
+            />
+          </div>
+
+          <div className="grid gap-2">
+            <Label>Apariencia (tema)</Label>
+            <ThemePicker
+              value={draft.themeId}
+              onChange={(themeId) => setDraft((s) => ({ ...s, themeId }))}
             />
           </div>
 
@@ -155,6 +174,16 @@ export function SettingsDialog({ settings, memories, onSave }: Props) {
               ningún modelo. Ideal mientras eliges o instalas el equipo.
             </p>
           ) : null}
+
+          <a
+            href="https://github.com/xoginger/LEGADO/blob/main/docs/es/uso.md"
+            target="_blank"
+            rel="noreferrer"
+            className="text-muted-foreground hover:text-foreground inline-flex items-center gap-2 text-xs underline-offset-4 hover:underline"
+          >
+            <BookOpen className="size-3.5" />
+            Ver guía de uso
+          </a>
         </div>
 
         <DialogFooter className="flex-col gap-2 sm:flex-row sm:justify-between">
@@ -178,6 +207,7 @@ export function SettingsDialog({ settings, memories, onSave }: Props) {
                   draft.ollamaBaseUrl.trim() || "http://127.0.0.1:11434",
                 ollamaModel: draft.ollamaModel.trim() || "llama3.2",
               });
+              applyTheme(draft.themeId);
               setOpen(false);
             }}
           >

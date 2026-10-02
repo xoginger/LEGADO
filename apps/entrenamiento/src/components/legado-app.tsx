@@ -1,16 +1,20 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { BrandMark } from "@/components/brand-mark";
 import { ChatPanel } from "@/components/chat-panel";
 import { MemoriesPanel } from "@/components/memories-panel";
 import { SettingsDialog } from "@/components/settings-dialog";
+import { ThemeProvider } from "@/components/theme-provider";
 import {
+  applyTheme,
   loadMemories,
   loadMessages,
   loadSettings,
   saveMemories,
   saveMessages,
   saveSettings,
+  saveThemeId,
 } from "@legado/shared";
 import type { ChatMessage, Memory, Settings } from "@legado/shared";
 import { DEFAULT_SETTINGS } from "@legado/shared";
@@ -39,50 +43,59 @@ export function LegadoApp() {
   const [tab, setTab] = useState<"memorias" | "chat">("memorias");
 
   useEffect(() => {
-    let cancelled = false;
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 4000);
     (async () => {
       const localMemories = loadMemories();
       const localMessages = loadMessages();
       const localSettings = loadSettings();
       try {
-        const res = await fetch("/api/store", {
-          signal: AbortSignal.timeout(4000),
-        });
+        const res = await fetch("/api/store", { signal: controller.signal });
         if (res.ok) {
           const disk = (await res.json()) as {
             memories?: Memory[];
             messages?: ChatMessage[];
             settings?: Settings;
           };
-          if (!cancelled) {
-            const memoriesNext =
-              disk.memories && disk.memories.length > 0
-                ? disk.memories
-                : localMemories;
-            const messagesNext = disk.messages ?? localMessages;
-            const settingsNext = disk.settings ?? localSettings;
-            setMemories(memoriesNext);
-            setMessages(messagesNext);
-            setSettings(settingsNext);
-            saveMemories(memoriesNext);
-            saveMessages(messagesNext);
-            saveSettings(settingsNext);
-            setReady(true);
-            return;
-          }
+          if (controller.signal.aborted) return;
+          const memoriesNext =
+            disk.memories && disk.memories.length > 0
+              ? disk.memories
+              : localMemories;
+          const messagesNext = disk.messages ?? localMessages;
+          const settingsNext = {
+            ...DEFAULT_SETTINGS,
+            ...localSettings,
+            ...(disk.settings ?? {}),
+            themeId:
+              disk.settings?.themeId ??
+              localSettings.themeId ??
+              DEFAULT_SETTINGS.themeId,
+          };
+          setMemories(memoriesNext);
+          setMessages(messagesNext);
+          setSettings(settingsNext);
+          saveMemories(memoriesNext);
+          saveMessages(messagesNext);
+          saveSettings(settingsNext);
+          applyTheme(settingsNext.themeId);
+          setReady(true);
+          return;
         }
       } catch {
+        if (controller.signal.aborted) return;
         // fallback local
       }
-      if (!cancelled) {
-        setMemories(localMemories);
-        setMessages(localMessages);
-        setSettings(localSettings);
-        setReady(true);
-      }
+      if (controller.signal.aborted) return;
+      setMemories(localMemories);
+      setMessages(localMessages);
+      setSettings(localSettings);
+      applyTheme(localSettings.themeId);
+      setReady(true);
     })();
     return () => {
-      cancelled = true;
+      clearTimeout(timeout);
+      controller.abort();
     };
   }, []);
 
@@ -101,86 +114,97 @@ export function LegadoApp() {
   function updateSettings(next: Settings) {
     setSettings(next);
     saveSettings(next);
+    saveThemeId(next.themeId);
+    applyTheme(next.themeId);
     void persistDisk({ settings: next });
   }
 
   if (!ready) {
     return (
-      <div className="flex flex-1 items-center justify-center px-6 py-24">
-        <div className="legado-empty max-w-sm rounded-2xl px-8 py-10 text-center">
-          <p className="font-heading text-2xl text-[var(--legado-ink)]">
-            Abriendo entrenamiento…
-          </p>
-          <p className="text-muted-foreground mt-2 text-sm">
-            Cargando memorias locales de este equipo.
-          </p>
+      <ThemeProvider>
+        <div className="flex flex-1 items-center justify-center px-6 py-24">
+          <div className="legado-empty max-w-sm rounded-2xl px-8 py-10 text-center">
+            <p className="font-heading text-2xl text-[var(--legado-ink)]">
+              Abriendo entrenamiento…
+            </p>
+            <p className="text-muted-foreground mt-2 text-sm">
+              Cargando memorias locales de este equipo.
+            </p>
+          </div>
         </div>
-      </div>
+      </ThemeProvider>
     );
   }
 
   return (
-    <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col px-4 pb-8 pt-6 sm:px-6 lg:px-8">
-      <header className="legado-hero mb-8 overflow-hidden rounded-[1.75rem] px-6 py-8 sm:px-10 sm:py-10">
-        <div className="relative z-10 max-w-2xl">
-          <p className="text-muted-foreground text-xs font-medium tracking-[0.18em] uppercase">
-            Entrenamiento · Training
-          </p>
-          <p className="font-heading mt-2 text-4xl tracking-tight text-[var(--legado-ink)] sm:text-5xl">
-            LEGADO
-          </p>
-          <p className="mt-3 max-w-xl text-base leading-relaxed text-[var(--legado-ink)]/80 sm:text-lg">
-            Captura recuerdos, frases y conocimientos. Prueba la conversación
-            antes de compartir el legado con tus hijos.
-          </p>
-          <div className="mt-6 flex flex-wrap items-center gap-3">
-            <SettingsDialog
-              settings={settings}
+    <ThemeProvider themeId={settings.themeId}>
+      <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col px-4 pt-6 pb-8 sm:px-6 lg:px-8">
+        <header className="legado-hero mb-8 overflow-hidden rounded-[1.75rem] px-6 py-8 sm:px-10 sm:py-10">
+          <div className="relative z-10 max-w-2xl">
+            <div className="flex items-center gap-3">
+              <BrandMark size={52} priority />
+              <div>
+                <p className="text-muted-foreground text-xs font-medium tracking-[0.18em] uppercase">
+                  Entrenamiento · Training
+                </p>
+                <p className="font-heading text-4xl tracking-tight text-[var(--legado-ink)] sm:text-5xl">
+                  LEGADO
+                </p>
+              </div>
+            </div>
+            <p className="mt-3 max-w-xl text-base leading-relaxed text-[var(--legado-ink)]/80 sm:text-lg">
+              Captura recuerdos, frases y conocimientos. Prueba la conversación
+              antes de compartir el legado con tus hijos.
+            </p>
+            <div className="mt-6 flex flex-wrap items-center gap-3">
+              <SettingsDialog
+                settings={settings}
+                memories={memories}
+                onSave={updateSettings}
+              />
+              <span className="text-muted-foreground text-xs sm:text-sm">
+                {memories.length}{" "}
+                {memories.length === 1 ? "memoria" : "memorias"} · local-first
+              </span>
+            </div>
+          </div>
+        </header>
+
+        <div className="mb-4 flex gap-2 lg:hidden">
+          <button
+            type="button"
+            className={`legado-tab flex-1 ${tab === "memorias" ? "is-active" : ""}`}
+            onClick={() => setTab("memorias")}
+          >
+            Memorias
+          </button>
+          <button
+            type="button"
+            className={`legado-tab flex-1 ${tab === "chat" ? "is-active" : ""}`}
+            onClick={() => setTab("chat")}
+          >
+            Conversar
+          </button>
+        </div>
+
+        <div className="grid min-h-0 flex-1 gap-6 lg:grid-cols-2">
+          <div
+            className={`min-h-[28rem] ${tab === "memorias" ? "block" : "hidden"} lg:block`}
+          >
+            <MemoriesPanel memories={memories} onChange={updateMemories} />
+          </div>
+          <div
+            className={`min-h-[28rem] ${tab === "chat" ? "block" : "hidden"} lg:block`}
+          >
+            <ChatPanel
               memories={memories}
-              onSave={updateSettings}
+              messages={messages}
+              settings={settings}
+              onMessagesChange={updateMessages}
             />
-            <span className="text-muted-foreground text-xs sm:text-sm">
-              {memories.length}{" "}
-              {memories.length === 1 ? "memoria" : "memorias"} · local-first
-            </span>
           </div>
         </div>
-      </header>
-
-      <div className="mb-4 flex gap-2 lg:hidden">
-        <button
-          type="button"
-          className={`legado-tab flex-1 ${tab === "memorias" ? "is-active" : ""}`}
-          onClick={() => setTab("memorias")}
-        >
-          Memorias
-        </button>
-        <button
-          type="button"
-          className={`legado-tab flex-1 ${tab === "chat" ? "is-active" : ""}`}
-          onClick={() => setTab("chat")}
-        >
-          Conversar
-        </button>
       </div>
-
-      <div className="grid min-h-0 flex-1 gap-6 lg:grid-cols-2">
-        <div
-          className={`min-h-[28rem] ${tab === "memorias" ? "block" : "hidden"} lg:block`}
-        >
-          <MemoriesPanel memories={memories} onChange={updateMemories} />
-        </div>
-        <div
-          className={`min-h-[28rem] ${tab === "chat" ? "block" : "hidden"} lg:block`}
-        >
-          <ChatPanel
-            memories={memories}
-            messages={messages}
-            settings={settings}
-            onMessagesChange={updateMessages}
-          />
-        </div>
-      </div>
-    </div>
+    </ThemeProvider>
   );
 }

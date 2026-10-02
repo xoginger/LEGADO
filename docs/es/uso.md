@@ -158,3 +158,40 @@ Cuando el selector de temas esté disponible en Entrenamiento/Consulta, elige el
 - Donativos: [../../DONATIONS.md](../../DONATIONS.md) · [Ko-fi](https://ko-fi.com/xoginger)
 - Repo: https://github.com/xoginger/LEGADO
 - Landing (GitHub Pages): https://xoginger.github.io/LEGADO/
+
+### Temas de interfaz (skins)
+
+En **Ajustes** (Entrenamiento) o **Tema** (Consulta) puedes elegir:
+
+| Tema | Idea |
+| --- | --- |
+| **Legado** | Por defecto: cálido, memorial, verde salvia + dorado. |
+| **Matrix** | Terminal verde, tipografía mono. |
+| **Jarvis** | HUD cian / asistente técnico. |
+| **Anime** | Pastel expresivo, tipografía redondeada. |
+| **Pergamino** | Tinta sepia sobre papel antiguo. |
+| **Noche mínima** | Oscuro sobrio, tipografía clara. |
+
+- Al pasar el cursor / enfocar una tarjeta ves una **vista previa**.
+- La elección se guarda en `localStorage` (`legado.theme.v1` + ajustes) y la **comparten** Entrenamiento y Consulta en el mismo navegador.
+- Tipografías y motion sutil cambian por skin (CSS variables en `packages/shared/themes`).
+
+### Icono de marca
+
+Assets en `packages/shared/assets/` (SVG + PNG), copiados a `apps/*/public/brand/` y `web/brand/` para landing / GitHub. Favicon y cabecera de ambas apps usan la marca LEGADO (libro + brote).
+
+### Export / backup
+
+Desde Ajustes de Entrenamiento: **Exportar memorias (JSON)**. Ese archivo se puede importar en Consulta.
+
+---
+
+## 4. Uso gratuito y donativos
+
+LEGADO es **gratis** (MIT). Donativos opcionales vía **Ko-fi (Stripe)**: https://ko-fi.com/xoginger — detalles en [DONATIONS.md](../../DONATIONS.md).
+
+---
+
+## 5. Fuera de esta guía (fases posteriores)
+
+Voz clonada, avatar y modo quiosco / lockdown del OS **no bloquean** el uso actual de texto. Ver [plan.md](./plan.md).

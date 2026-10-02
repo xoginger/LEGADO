@@ -1,9 +1,22 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { BrandMark } from "@/components/brand-mark";
 import { ChatPanel } from "@/components/chat-panel";
+import { ThemePicker } from "@/components/theme-picker";
+import { ThemeProvider } from "@/components/theme-provider";
 import { Button } from "@/components/ui/button";
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  applyTheme,
   loadMemories,
   loadMessages,
   loadSettings,
@@ -11,10 +24,11 @@ import {
   saveMemories,
   saveMessages,
   saveSettings,
+  saveThemeId,
 } from "@legado/shared";
-import type { ChatMessage, Memory, Settings } from "@legado/shared";
+import type { ChatMessage, Memory, Settings, ThemeId } from "@legado/shared";
 import { DEFAULT_SETTINGS } from "@legado/shared";
-import { Upload } from "lucide-react";
+import { BookOpen, Palette, Upload } from "lucide-react";
 
 async function persistDisk(patch: {
   memories?: Memory[];
@@ -32,6 +46,74 @@ async function persistDisk(patch: {
   }
 }
 
+function ThemeDialog({
+  themeId,
+  onChange,
+}: {
+  themeId: ThemeId;
+  onChange: (themeId: ThemeId) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const [draft, setDraft] = useState(themeId);
+
+  useEffect(() => {
+    if (open) setDraft(themeId);
+  }, [open, themeId]);
+
+  return (
+    <Dialog
+      open={open}
+      onOpenChange={(next) => {
+        setOpen(next);
+        if (!next) applyTheme(themeId);
+      }}
+    >
+      <DialogTrigger
+        render={<Button variant="outline" size="sm" className="gap-2" />}
+      >
+        <Palette className="size-4" />
+        Tema
+      </DialogTrigger>
+      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-lg">
+        <DialogHeader>
+          <DialogTitle>Apariencia</DialogTitle>
+          <DialogDescription>
+            Elige un skin. Se guarda en este navegador y lo comparte
+            Entrenamiento.
+          </DialogDescription>
+        </DialogHeader>
+        <ThemePicker
+          value={draft}
+          onChange={(id) => {
+            setDraft(id);
+            applyTheme(id);
+          }}
+        />
+        <a
+          href="https://github.com/xoginger/LEGADO/blob/main/docs/es/uso.md"
+          target="_blank"
+          rel="noreferrer"
+          className="text-muted-foreground hover:text-foreground inline-flex items-center gap-2 text-xs underline-offset-4 hover:underline"
+        >
+          <BookOpen className="size-3.5" />
+          Ver guía de uso
+        </a>
+        <DialogFooter>
+          <Button
+            type="button"
+            onClick={() => {
+              onChange(draft);
+              setOpen(false);
+            }}
+          >
+            Guardar tema
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
 export function ConsultaApp() {
   const [ready, setReady] = useState(false);
   const [memories, setMemories] = useState<Memory[]>([]);
@@ -41,46 +123,56 @@ export function ConsultaApp() {
   const fileRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    let cancelled = false;
+    const controller = new AbortController();
     (async () => {
       const localMemories = loadMemories();
       const localMessages = loadMessages();
       const localSettings = loadSettings();
       try {
-        const res = await fetch("/api/store");
+        const res = await fetch("/api/store", { signal: controller.signal });
         if (res.ok) {
           const disk = (await res.json()) as {
             memories?: Memory[];
             messages?: ChatMessage[];
             settings?: Settings;
           };
-          if (!cancelled) {
-            const memoriesNext =
-              disk.memories && disk.memories.length > 0
-                ? disk.memories
-                : localMemories;
-            setMemories(memoriesNext);
-            setMessages(disk.messages ?? localMessages);
-            setSettings(disk.settings ?? localSettings);
-            saveMemories(memoriesNext);
-            saveMessages(disk.messages ?? localMessages);
-            saveSettings(disk.settings ?? localSettings);
-            setReady(true);
-            return;
-          }
+          if (controller.signal.aborted) return;
+          const memoriesNext =
+            disk.memories && disk.memories.length > 0
+              ? disk.memories
+              : localMemories;
+          const settingsNext = {
+            ...DEFAULT_SETTINGS,
+            ...localSettings,
+            ...(disk.settings ?? {}),
+            themeId:
+              disk.settings?.themeId ??
+              localSettings.themeId ??
+              DEFAULT_SETTINGS.themeId,
+          };
+          setMemories(memoriesNext);
+          setMessages(disk.messages ?? localMessages);
+          setSettings(settingsNext);
+          saveMemories(memoriesNext);
+          saveMessages(disk.messages ?? localMessages);
+          saveSettings(settingsNext);
+          applyTheme(settingsNext.themeId);
+          setReady(true);
+          return;
         }
       } catch {
+        if (controller.signal.aborted) return;
         // fallback
       }
-      if (!cancelled) {
-        setMemories(localMemories);
-        setMessages(localMessages);
-        setSettings(localSettings);
-        setReady(true);
-      }
+      if (controller.signal.aborted) return;
+      setMemories(localMemories);
+      setMessages(localMessages);
+      setSettings(localSettings);
+      applyTheme(localSettings.themeId);
+      setReady(true);
     })();
     return () => {
-      cancelled = true;
+      controller.abort();
     };
   }, []);
 
@@ -88,6 +180,15 @@ export function ConsultaApp() {
     setMessages(next);
     saveMessages(next);
     void persistDisk({ messages: next });
+  }
+
+  function updateTheme(themeId: ThemeId) {
+    const next = { ...settings, themeId };
+    setSettings(next);
+    saveSettings(next);
+    saveThemeId(themeId);
+    applyTheme(themeId);
+    void persistDisk({ settings: next });
   }
 
   async function onImportFile(file: File) {
@@ -111,75 +212,88 @@ export function ConsultaApp() {
 
   if (!ready) {
     return (
-      <div className="flex flex-1 items-center justify-center px-6 py-24">
-        <div className="legado-empty max-w-sm rounded-2xl px-8 py-10 text-center">
-          <p className="font-heading text-2xl text-[var(--legado-ink)]">
-            Abriendo consulta…
-          </p>
-          <p className="text-muted-foreground mt-2 text-sm">
-            Preparando el legado para conversar.
-          </p>
+      <ThemeProvider>
+        <div className="flex flex-1 items-center justify-center px-6 py-24">
+          <div className="legado-empty max-w-sm rounded-2xl px-8 py-10 text-center">
+            <p className="font-heading text-2xl text-[var(--legado-ink)]">
+              Abriendo consulta…
+            </p>
+            <p className="text-muted-foreground mt-2 text-sm">
+              Preparando el legado para conversar.
+            </p>
+          </div>
         </div>
-      </div>
+      </ThemeProvider>
     );
   }
 
   return (
-    <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col px-4 pb-8 pt-6 sm:px-6">
-      <header className="legado-hero mb-8 overflow-hidden rounded-[1.75rem] px-6 py-8 sm:px-10 sm:py-10">
-        <div className="relative z-10">
-          <p className="text-muted-foreground text-xs font-medium tracking-[0.18em] uppercase">
-            Consulta · Legacy interface
-          </p>
-          <p className="font-heading mt-2 text-4xl tracking-tight text-[var(--legado-ink)] sm:text-5xl">
-            LEGADO
-          </p>
-          <p className="mt-3 max-w-xl text-base leading-relaxed text-[var(--legado-ink)]/80 sm:text-lg">
-            Habla con la presencia de{" "}
-            <span className="font-medium">{settings.personName}</span>. Aquí no
-            se editan memorias: solo se consulta el legado.
-          </p>
-          <div className="mt-6 flex flex-wrap items-center gap-3">
-            <input
-              ref={fileRef}
-              type="file"
-              accept="application/json,.json"
-              className="hidden"
-              onChange={(e) => {
-                const file = e.target.files?.[0];
-                if (file) void onImportFile(file);
-              }}
-            />
-            <Button
-              variant="outline"
-              size="sm"
-              className="gap-2"
-              onClick={() => fileRef.current?.click()}
-            >
-              <Upload className="size-4" />
-              Importar JSON
-            </Button>
-            <span className="text-muted-foreground text-xs sm:text-sm">
-              {memories.length}{" "}
-              {memories.length === 1 ? "memoria" : "memorias"} disponibles
-            </span>
-          </div>
-          {importError ? (
-            <p className="text-destructive mt-3 text-sm" role="alert">
-              {importError}
+    <ThemeProvider themeId={settings.themeId}>
+      <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col px-4 pt-6 pb-8 sm:px-6">
+        <header className="legado-hero mb-8 overflow-hidden rounded-[1.75rem] px-6 py-8 sm:px-10 sm:py-10">
+          <div className="relative z-10">
+            <div className="flex items-center gap-3">
+              <BrandMark size={52} priority />
+              <div>
+                <p className="text-muted-foreground text-xs font-medium tracking-[0.18em] uppercase">
+                  Consulta · Legacy interface
+                </p>
+                <p className="font-heading text-4xl tracking-tight text-[var(--legado-ink)] sm:text-5xl">
+                  LEGADO
+                </p>
+              </div>
+            </div>
+            <p className="mt-3 max-w-xl text-base leading-relaxed text-[var(--legado-ink)]/80 sm:text-lg">
+              Habla con la presencia de{" "}
+              <span className="font-medium">{settings.personName}</span>. Aquí no
+              se editan memorias: solo se consulta el legado.
             </p>
-          ) : null}
-        </div>
-      </header>
+            <div className="mt-6 flex flex-wrap items-center gap-3">
+              <input
+                ref={fileRef}
+                type="file"
+                accept="application/json,.json"
+                className="hidden"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) void onImportFile(file);
+                }}
+              />
+              <Button
+                variant="outline"
+                size="sm"
+                className="gap-2"
+                onClick={() => fileRef.current?.click()}
+              >
+                <Upload className="size-4" />
+                Importar JSON
+              </Button>
+              <ThemeDialog
+                themeId={settings.themeId}
+                onChange={updateTheme}
+              />
+              <span className="text-muted-foreground text-xs sm:text-sm">
+                {memories.length}{" "}
+                {memories.length === 1 ? "memoria" : "memorias"} disponibles
+              </span>
+            </div>
+            {importError ? (
+              <p className="text-destructive mt-3 text-sm" role="alert">
+                {importError}
+              </p>
+            ) : null}
+          </div>
+        </header>
 
-      <div className="min-h-[28rem] flex-1">
-        <ChatPanel
-          memories={memories}
-          messages={messages}
-          settings={settings}
-          onMessagesChange={updateMessages}
-        />
+        <div className="min-h-[28rem] flex-1">
+          <ChatPanel
+            memories={memories}
+            messages={messages}
+            settings={settings}
+            onMessagesChange={updateMessages}
+          />
+        </div>
       </div>
-    </div>
+    </ThemeProvider>
   );
 }

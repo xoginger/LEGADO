@@ -158,3 +158,40 @@ When the theme picker ships in Training/Consultation, choose a skin in app setti
 - Donations: [../../DONATIONS.md](../../DONATIONS.md) · [Ko-fi](https://ko-fi.com/xoginger)
 - Repo: https://github.com/xoginger/LEGADO
 - Landing (GitHub Pages): https://xoginger.github.io/LEGADO/
+
+### UI themes (skins)
+
+In **Settings** (Training) or **Theme** (Consultation):
+
+| Theme | Feel |
+| --- | --- |
+| **Legado** | Default: warm memorial sage + gold. |
+| **Matrix** | Green terminal, mono type. |
+| **Jarvis** | Cyan HUD / assistant cockpit. |
+| **Anime** | Soft pastel, rounded type. |
+| **Pergamino** | Sepia ink on aged paper. |
+| **Noche mínima** | Quiet dark, clear type. |
+
+- Hover / focus a card for a **live preview**.
+- Choice is stored in `localStorage` (`legado.theme.v1` + settings) and **shared** by Training and Consultation in the same browser.
+- Fonts and subtle motion follow each skin (CSS variables in `packages/shared/themes`).
+
+### Brand icon
+
+Assets live in `packages/shared/assets/` (SVG + PNG), copied to `apps/*/public/brand/` and `web/brand/` for landing / GitHub. Both apps use the LEGADO mark (book + seedling) in favicon and header.
+
+### Export / backup
+
+From Training settings: **Export memories (JSON)**. Import that file in Consultation.
+
+---
+
+## 4. Free to use · donations
+
+LEGADO is **free** (MIT). Optional donations via **Ko-fi (Stripe)**: https://ko-fi.com/xoginger — see [DONATIONS.md](../../DONATIONS.md).
+
+---
+
+## 5. Out of scope here (later phases)
+
+Cloned voice, avatar, and OS kiosk / lockdown **do not block** the current text workflow. See [plan.md](./plan.md).

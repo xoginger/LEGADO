@@ -1,46 +1,46 @@
 # LEGADO
 
-**Gratis y open source.** IA personal local-first: captura tus memorias, frases y conocimientos; más adelante, tu familia puede conversar con esa presencia.
+**Libre y de código abierto.** IA de legado personal local-first: captura memorias, frases y conocimiento; deja que tu familia converse con esa presencia después.
+
+<p align="center">
+  <img src="./packages/shared/assets/legado-mark.svg" alt="LEGADO" width="96" height="96" />
+</p>
 
 > English README: [README.md](./README.md)  
 > **Sitio:** [https://xoginger.github.io/LEGADO/](https://xoginger.github.io/LEGADO/) (`web/` → GitHub Pages)
 
 ## Cómo usar
 
-Empieza aquí: **[docs/es/uso.md](./docs/es/uso.md)** — requisitos mínimos, configuración del equipo e instrucciones paso a paso (Entrenamiento → Consulta). English: [docs/en/usage.md](./docs/en/usage.md).
+Empieza aquí: **[docs/es/uso.md](./docs/es/uso.md)** — requisitos mínimos, preparación del equipo y uso paso a paso (Entrenamiento → Consulta). English: [docs/en/usage.md](./docs/en/usage.md).
 
-## Dos aplicaciones
+## Dos apps
 
-| App | Ruta | Propósito | URL de desarrollo |
-| --- | --- | --- | --- |
-| **Entrenamiento** | `apps/entrenamiento` | Capturar y editar memorias, configurar LLM local, probar el chat | http://127.0.0.1:43127 |
-| **Consulta** | `apps/consulta` | Interfaz para hijos/familia — solo chat (importar JSON o store en disco compartido) | http://127.0.0.1:43128 |
-
-La lógica compartida está en `packages/shared`.
-
-**Prioridad:** primero entrenamiento + chat de texto. Voz clonada, avatar y modo quiosco vienen después.
+| App | Propósito |
+| --- | --- |
+| **Entrenamiento** (`apps/entrenamiento`) | Capturar memorias y probar el chat en local |
+| **Consulta** (`apps/consulta`) | Conversación de solo lectura con un legado exportado |
 
 ## Arranque rápido
 
 ```bash
 npm install
-npm run dev:entrenamiento   # app de entrenamiento
-npm run dev:consulta        # app de consulta (otra terminal)
+npm run dev:entrenamiento   # http://127.0.0.1:43127
+npm run dev:consulta        # http://127.0.0.1:43128
 ```
 
-Modelo local opcional: instala [Ollama](https://ollama.com), descarga un modelo (p. ej. `ollama pull llama3.2`) y deja el proveedor por defecto en Ajustes de Entrenamiento.
+Necesitas [Node.js](https://nodejs.org/) 20+ y opcionalmente [Ollama](https://ollama.com/) para modelos locales.
 
-## Uso gratuito · Donativos
+## Gratis · Donativos
 
-LEGADO es gratuito bajo la [licencia MIT](./LICENSE). Si te sirve, puedes apoyar el proyecto en **[Ko-fi](https://ko-fi.com/xoginger)** (Stripe) — detalles en [DONATIONS.md](./DONATIONS.md).
+LEGADO es gratis bajo la [licencia MIT](./LICENSE). Si te ayuda, puedes apoyar el proyecto en **[Ko-fi](https://ko-fi.com/xoginger)** (Stripe) — detalles en [DONATIONS.md](./DONATIONS.md).
 
 ## Documentación
 
 | Tema | Español | English |
 | --- | --- | --- |
-| **Cómo usar** (requisitos, equipo, pasos) | [docs/es/uso.md](./docs/es/uso.md) | [docs/en/usage.md](./docs/en/usage.md) |
+| **Cómo usar** (requisitos, setup, pasos, temas) | [docs/es/uso.md](./docs/es/uso.md) | [docs/en/usage.md](./docs/en/usage.md) |
 | Plan / arquitectura | [docs/es/plan.md](./docs/es/plan.md) | [docs/en/plan.md](./docs/en/plan.md) |
-| Guía de equipo local | [docs/es/equipo-local.md](./docs/es/equipo-local.md) | [docs/en/hardware.md](./docs/en/hardware.md) |
+| Guía de hardware local | [docs/es/equipo-local.md](./docs/es/equipo-local.md) | [docs/en/hardware.md](./docs/en/hardware.md) |
 | Contribuir | [docs/es/contribuir.md](./docs/es/contribuir.md) | [docs/en/contributing.md](./docs/en/contributing.md) |
 | Landing pública (Pages) | [web/](./web/) · [web/README.md](./web/README.md) | — |
 | Código de conducta | [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md) | — |

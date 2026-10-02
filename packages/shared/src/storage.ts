@@ -1,5 +1,11 @@
 import type { ChatMessage, LegadoExport, Memory, Settings } from "./types";
 import { DEFAULT_SETTINGS } from "./types";
+import {
+  DEFAULT_THEME_ID,
+  isThemeId,
+  loadThemeId,
+  saveThemeId,
+} from "./themes";
 
 const MEMORIES_KEY = "legado.memories.v1";
 const MESSAGES_KEY = "legado.messages.v1";
@@ -43,6 +49,9 @@ export function loadSettings(): Settings {
     }
   >(localStorage.getItem(SETTINGS_KEY), {});
 
+  const themeFromSettings = isThemeId(raw.themeId) ? raw.themeId : null;
+  const themeId = themeFromSettings ?? loadThemeId() ?? DEFAULT_THEME_ID;
+
   const migrated: Settings = {
     ...DEFAULT_SETTINGS,
     personName: raw.personName ?? DEFAULT_SETTINGS.personName,
@@ -51,6 +60,7 @@ export function loadSettings(): Settings {
     ollamaModel: raw.ollamaModel ?? DEFAULT_SETTINGS.ollamaModel,
     openaiApiKey:
       raw.openaiApiKey ?? raw.apiKey ?? DEFAULT_SETTINGS.openaiApiKey,
+    themeId,
   };
 
   if (!raw.provider && raw.useApi && (raw.openaiApiKey || raw.apiKey)) {
@@ -62,6 +72,9 @@ export function loadSettings(): Settings {
 
 export function saveSettings(settings: Settings): void {
   localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+  if (isThemeId(settings.themeId)) {
+    saveThemeId(settings.themeId);
+  }
 }
 
 export function buildExport(

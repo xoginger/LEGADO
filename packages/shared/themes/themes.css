@@ -1,0 +1,418 @@
+/* LEGADO theme skins — applied via html[data-theme="…"] */
+
+:root,
+[data-theme="legado"] {
+  --legado-ink: #1f3a32;
+  --legado-moss: #3f6b57;
+  --legado-mist: #d7e4dc;
+  --legado-panel: #f4f8f5;
+  --legado-line: color-mix(in oklab, #1f3a32 12%, transparent);
+  --legado-glow: #c9a45c;
+  --legado-bubble-user-fg: #f4f8f5;
+  --legado-body-bg:
+    radial-gradient(ellipse 90% 55% at 10% -10%, #cfe0d4 0%, transparent 55%),
+    radial-gradient(ellipse 70% 45% at 95% 5%, #e6efc9 0%, transparent 50%),
+    linear-gradient(180deg, #eef5f0 0%, #e2ebe4 45%, #d9e5dc 100%);
+  --legado-hero-bg:
+    linear-gradient(135deg, rgba(244, 248, 245, 0.92), rgba(215, 228, 220, 0.78));
+  --legado-hero-pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cg fill='none' stroke='%231f3a32' stroke-opacity='0.06'%3E%3Cpath d='M0 80h160M80 0v160'/%3E%3Ccircle cx='80' cy='80' r='48'/%3E%3C/g%3E%3C/svg%3E");
+  --legado-shadow: 0 18px 50px -28px rgba(31, 58, 50, 0.45);
+  --legado-motion-rise: legado-rise 700ms ease-out both;
+  --legado-motion-pop: legado-pop 300ms ease-out both;
+  --legado-motion-glow: legado-glow 4.5s ease-in-out infinite alternate;
+  --legado-font-sans: var(--font-legado-sans), "Source Sans 3", sans-serif;
+  --legado-font-heading: var(--font-legado-display), Fraunces, serif;
+  --legado-radius-tab: 999px;
+
+  --background: #e8f0ea;
+  --foreground: #1a2c26;
+  --card: #f4f8f5;
+  --card-foreground: #1a2c26;
+  --popover: #f7fbf8;
+  --popover-foreground: #1a2c26;
+  --primary: #2a5245;
+  --primary-foreground: #f4f8f5;
+  --secondary: #d5e3da;
+  --secondary-foreground: #243f36;
+  --muted: #dce8e0;
+  --muted-foreground: #5a7268;
+  --accent: #e7efc8;
+  --accent-foreground: #2a3d28;
+  --destructive: oklch(0.55 0.2 25);
+  --border: color-mix(in oklab, #1f3a32 14%, white);
+  --input: color-mix(in oklab, #1f3a32 16%, white);
+  --ring: #3f6b57;
+  --chart-1: #2a5245;
+  --chart-2: #5f8f78;
+  --chart-3: #c9a45c;
+  --chart-4: #7a9e8a;
+  --chart-5: #1f3a32;
+  --radius: 0.75rem;
+  --sidebar: #f4f8f5;
+  --sidebar-foreground: #1a2c26;
+  --sidebar-primary: #2a5245;
+  --sidebar-primary-foreground: #f4f8f5;
+  --sidebar-accent: #d5e3da;
+  --sidebar-accent-foreground: #243f36;
+  --sidebar-border: color-mix(in oklab, #1f3a32 14%, white);
+  --sidebar-ring: #3f6b57;
+}
+
+[data-theme="matrix"] {
+  --legado-ink: #b7ffb0;
+  --legado-moss: #39ff14;
+  --legado-mist: #0a1f12;
+  --legado-panel: #07140c;
+  --legado-line: color-mix(in oklab, #39ff14 28%, transparent);
+  --legado-glow: #39ff14;
+  --legado-bubble-user-fg: #020805;
+  --legado-body-bg:
+    linear-gradient(180deg, #020805 0%, #041008 50%, #020805 100%),
+    repeating-linear-gradient(
+      0deg,
+      transparent 0,
+      transparent 2px,
+      rgba(57, 255, 20, 0.035) 2px,
+      rgba(57, 255, 20, 0.035) 3px
+    );
+  --legado-hero-bg: linear-gradient(160deg, rgba(7, 20, 12, 0.96), rgba(2, 8, 5, 0.92));
+  --legado-hero-pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='80' viewBox='0 0 40 80'%3E%3Ctext x='8' y='16' fill='%2339ff14' fill-opacity='0.12' font-family='monospace' font-size='10'%3E01%3C/text%3E%3Ctext x='20' y='48' fill='%2339ff14' fill-opacity='0.08' font-family='monospace' font-size='10'%3E10%3C/text%3E%3C/svg%3E");
+  --legado-shadow: 0 0 28px -8px rgba(57, 255, 20, 0.35);
+  --legado-motion-rise: matrix-scan 900ms ease-out both;
+  --legado-motion-pop: matrix-flicker 280ms ease-out both;
+  --legado-motion-glow: matrix-pulse 2.8s ease-in-out infinite;
+  --legado-font-sans: var(--font-theme-mono), "Share Tech Mono", ui-monospace, monospace;
+  --legado-font-heading: var(--font-theme-mono), "Share Tech Mono", ui-monospace, monospace;
+  --legado-radius-tab: 0.25rem;
+
+  --background: #020805;
+  --foreground: #b7ffb0;
+  --card: #07140c;
+  --card-foreground: #b7ffb0;
+  --popover: #0a1a10;
+  --popover-foreground: #b7ffb0;
+  --primary: #39ff14;
+  --primary-foreground: #020805;
+  --secondary: #0d2416;
+  --secondary-foreground: #9dff96;
+  --muted: #0a1a10;
+  --muted-foreground: #6fbf68;
+  --accent: #12331c;
+  --accent-foreground: #39ff14;
+  --destructive: #ff5a5a;
+  --border: color-mix(in oklab, #39ff14 22%, black);
+  --input: color-mix(in oklab, #39ff14 18%, black);
+  --ring: #39ff14;
+  --chart-1: #39ff14;
+  --chart-2: #6fff5a;
+  --chart-3: #b7ffb0;
+  --chart-4: #1a8f2e;
+  --chart-5: #0d3d18;
+  --radius: 0.35rem;
+  --sidebar: #07140c;
+  --sidebar-foreground: #b7ffb0;
+  --sidebar-primary: #39ff14;
+  --sidebar-primary-foreground: #020805;
+  --sidebar-accent: #0d2416;
+  --sidebar-accent-foreground: #9dff96;
+  --sidebar-border: color-mix(in oklab, #39ff14 22%, black);
+  --sidebar-ring: #39ff14;
+}
+
+[data-theme="jarvis"] {
+  --legado-ink: #d7f4ff;
+  --legado-moss: #3ecbff;
+  --legado-mist: #0a2030;
+  --legado-panel: #0c1c2a;
+  --legado-line: color-mix(in oklab, #3ecbff 30%, transparent);
+  --legado-glow: #3ecbff;
+  --legado-bubble-user-fg: #041018;
+  --legado-body-bg:
+    radial-gradient(ellipse 70% 50% at 80% 0%, rgba(62, 203, 255, 0.12), transparent 55%),
+    linear-gradient(180deg, #071018 0%, #0a1622 55%, #050d14 100%),
+    repeating-linear-gradient(
+      90deg,
+      transparent 0,
+      transparent 47px,
+      rgba(62, 203, 255, 0.04) 47px,
+      rgba(62, 203, 255, 0.04) 48px
+    );
+  --legado-hero-bg: linear-gradient(145deg, rgba(12, 28, 42, 0.95), rgba(7, 16, 24, 0.9));
+  --legado-hero-pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cg fill='none' stroke='%233ecbff' stroke-opacity='0.12'%3E%3Cpath d='M0 40h80M40 0v80'/%3E%3Ccircle cx='40' cy='40' r='18'/%3E%3Ccircle cx='40' cy='40' r='28'/%3E%3C/g%3E%3C/svg%3E");
+  --legado-shadow: 0 0 40px -16px rgba(62, 203, 255, 0.45);
+  --legado-motion-rise: jarvis-rise 650ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  --legado-motion-pop: jarvis-rise 280ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  --legado-motion-glow: jarvis-ring 3.6s ease-in-out infinite;
+  --legado-font-sans: var(--font-theme-tech), "Exo 2", sans-serif;
+  --legado-font-heading: var(--font-theme-hud), Orbitron, sans-serif;
+  --legado-radius-tab: 0.4rem;
+
+  --background: #071018;
+  --foreground: #d7f4ff;
+  --card: #0c1c2a;
+  --card-foreground: #d7f4ff;
+  --popover: #102433;
+  --popover-foreground: #d7f4ff;
+  --primary: #3ecbff;
+  --primary-foreground: #041018;
+  --secondary: #143044;
+  --secondary-foreground: #b6e9ff;
+  --muted: #102433;
+  --muted-foreground: #7eafc4;
+  --accent: #16374d;
+  --accent-foreground: #3ecbff;
+  --destructive: #ff6b6b;
+  --border: color-mix(in oklab, #3ecbff 24%, black);
+  --input: color-mix(in oklab, #3ecbff 20%, black);
+  --ring: #3ecbff;
+  --chart-1: #3ecbff;
+  --chart-2: #7adfff;
+  --chart-3: #1a8bb8;
+  --chart-4: #d7f4ff;
+  --chart-5: #0c4a66;
+  --radius: 0.5rem;
+  --sidebar: #0c1c2a;
+  --sidebar-foreground: #d7f4ff;
+  --sidebar-primary: #3ecbff;
+  --sidebar-primary-foreground: #041018;
+  --sidebar-accent: #143044;
+  --sidebar-accent-foreground: #b6e9ff;
+  --sidebar-border: color-mix(in oklab, #3ecbff 24%, black);
+  --sidebar-ring: #3ecbff;
+}
+
+[data-theme="anime"] {
+  --legado-ink: #2a3350;
+  --legado-moss: #6b8cff;
+  --legado-mist: #e8eeff;
+  --legado-panel: #ffffff;
+  --legado-line: color-mix(in oklab, #6b8cff 18%, transparent);
+  --legado-glow: #ff7aa2;
+  --legado-bubble-user-fg: #ffffff;
+  --legado-body-bg:
+    radial-gradient(ellipse 80% 50% at 10% 0%, #ffe3ef 0%, transparent 50%),
+    radial-gradient(ellipse 70% 45% at 100% 10%, #d9e4ff 0%, transparent 55%),
+    linear-gradient(180deg, #f7f9ff 0%, #eef2ff 100%);
+  --legado-hero-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.92), rgba(232, 238, 255, 0.85));
+  --legado-hero-pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Ccircle cx='8' cy='12' r='2' fill='%23ff7aa2' fill-opacity='0.18'/%3E%3Ccircle cx='40' cy='30' r='3' fill='%236b8cff' fill-opacity='0.14'/%3E%3Ccircle cx='22' cy='48' r='2.5' fill='%23ffb86b' fill-opacity='0.16'/%3E%3C/svg%3E");
+  --legado-shadow: 0 18px 40px -24px rgba(107, 140, 255, 0.4);
+  --legado-motion-rise: anime-float 700ms ease-out both;
+  --legado-motion-pop: anime-bounce 360ms cubic-bezier(0.34, 1.4, 0.64, 1) both;
+  --legado-motion-glow: anime-sparkle 3.2s ease-in-out infinite;
+  --legado-font-sans: var(--font-theme-round), Nunito, "Segoe UI", sans-serif;
+  --legado-font-heading: var(--font-theme-round), Nunito, "Segoe UI", sans-serif;
+  --legado-radius-tab: 999px;
+
+  --background: #f3f7ff;
+  --foreground: #2a3350;
+  --card: #ffffff;
+  --card-foreground: #2a3350;
+  --popover: #ffffff;
+  --popover-foreground: #2a3350;
+  --primary: #6b8cff;
+  --primary-foreground: #ffffff;
+  --secondary: #e8eeff;
+  --secondary-foreground: #36406a;
+  --muted: #eef2ff;
+  --muted-foreground: #6b7598;
+  --accent: #ffe3ef;
+  --accent-foreground: #7a3350;
+  --destructive: #e45757;
+  --border: color-mix(in oklab, #6b8cff 16%, white);
+  --input: color-mix(in oklab, #6b8cff 18%, white);
+  --ring: #ff7aa2;
+  --chart-1: #6b8cff;
+  --chart-2: #ff7aa2;
+  --chart-3: #ffb86b;
+  --chart-4: #8ad7c0;
+  --chart-5: #2a3350;
+  --radius: 1rem;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #2a3350;
+  --sidebar-primary: #6b8cff;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #e8eeff;
+  --sidebar-accent-foreground: #36406a;
+  --sidebar-border: color-mix(in oklab, #6b8cff 16%, white);
+  --sidebar-ring: #ff7aa2;
+}
+
+[data-theme="pergamino"] {
+  --legado-ink: #3a2a1a;
+  --legado-moss: #8b5a2b;
+  --legado-mist: #efe2c6;
+  --legado-panel: #f7ecd4;
+  --legado-line: color-mix(in oklab, #3a2a1a 16%, transparent);
+  --legado-glow: #c4a35a;
+  --legado-bubble-user-fg: #f7ecd4;
+  --legado-body-bg:
+    radial-gradient(ellipse 90% 60% at 15% -5%, #f3e6c8 0%, transparent 55%),
+    linear-gradient(180deg, #f3e7cf 0%, #e8d7b4 45%, #dfcba3 100%);
+  --legado-hero-bg: linear-gradient(140deg, rgba(247, 236, 212, 0.95), rgba(232, 215, 180, 0.88));
+  --legado-hero-pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cpath d='M0 60h120M60 0v120' fill='none' stroke='%233a2a1a' stroke-opacity='0.05'/%3E%3C/svg%3E");
+  --legado-shadow: 0 16px 40px -28px rgba(58, 42, 26, 0.45);
+  --legado-motion-rise: pergamino-unfurl 800ms ease-out both;
+  --legado-motion-pop: pergamino-ink 320ms ease-out both;
+  --legado-motion-glow: pergamino-lamp 5s ease-in-out infinite alternate;
+  --legado-font-sans: var(--font-theme-serif-body), "Source Serif 4", Georgia, serif;
+  --legado-font-heading: var(--font-theme-serif), "Libre Baskerville", Georgia, serif;
+  --legado-radius-tab: 0.35rem;
+
+  --background: #efe2c6;
+  --foreground: #3a2a1a;
+  --card: #f7ecd4;
+  --card-foreground: #3a2a1a;
+  --popover: #faf1dc;
+  --popover-foreground: #3a2a1a;
+  --primary: #6b4226;
+  --primary-foreground: #f7ecd4;
+  --secondary: #e5d3ad;
+  --secondary-foreground: #3a2a1a;
+  --muted: #ead9b6;
+  --muted-foreground: #6e5842;
+  --accent: #e8d4a0;
+  --accent-foreground: #3a2a1a;
+  --destructive: #a33b2b;
+  --border: color-mix(in oklab, #3a2a1a 18%, #efe2c6);
+  --input: color-mix(in oklab, #3a2a1a 16%, #efe2c6);
+  --ring: #8b5a2b;
+  --chart-1: #6b4226;
+  --chart-2: #8b5a2b;
+  --chart-3: #c4a35a;
+  --chart-4: #a67c52;
+  --chart-5: #3a2a1a;
+  --radius: 0.45rem;
+  --sidebar: #f7ecd4;
+  --sidebar-foreground: #3a2a1a;
+  --sidebar-primary: #6b4226;
+  --sidebar-primary-foreground: #f7ecd4;
+  --sidebar-accent: #e5d3ad;
+  --sidebar-accent-foreground: #3a2a1a;
+  --sidebar-border: color-mix(in oklab, #3a2a1a 18%, #efe2c6);
+  --sidebar-ring: #8b5a2b;
+}
+
+[data-theme="noche"] {
+  --legado-ink: #e8eaed;
+  --legado-moss: #9aa7b5;
+  --legado-mist: #1a1d22;
+  --legado-panel: #1a1d22;
+  --legado-line: color-mix(in oklab, #e8eaed 14%, transparent);
+  --legado-glow: #9aa7b5;
+  --legado-bubble-user-fg: #121417;
+  --legado-body-bg: linear-gradient(180deg, #121417 0%, #16191e 50%, #101214 100%);
+  --legado-hero-bg: linear-gradient(150deg, rgba(26, 29, 34, 0.98), rgba(18, 20, 23, 0.95));
+  --legado-hero-pattern: none;
+  --legado-shadow: 0 12px 32px -20px rgba(0, 0, 0, 0.65);
+  --legado-motion-rise: noche-fade 500ms ease-out both;
+  --legado-motion-pop: noche-fade 240ms ease-out both;
+  --legado-motion-glow: noche-breathe 6s ease-in-out infinite alternate;
+  --legado-font-sans: var(--font-theme-minimal), "DM Sans", system-ui, sans-serif;
+  --legado-font-heading: var(--font-theme-minimal), "DM Sans", system-ui, sans-serif;
+  --legado-radius-tab: 0.5rem;
+
+  --background: #121417;
+  --foreground: #e8eaed;
+  --card: #1a1d22;
+  --card-foreground: #e8eaed;
+  --popover: #1f2329;
+  --popover-foreground: #e8eaed;
+  --primary: #c5ccd4;
+  --primary-foreground: #121417;
+  --secondary: #242830;
+  --secondary-foreground: #d5dae0;
+  --muted: #1f2329;
+  --muted-foreground: #9aa7b5;
+  --accent: #262b33;
+  --accent-foreground: #e8eaed;
+  --destructive: #d96a6a;
+  --border: color-mix(in oklab, #e8eaed 12%, #121417);
+  --input: color-mix(in oklab, #e8eaed 10%, #121417);
+  --ring: #9aa7b5;
+  --chart-1: #c5ccd4;
+  --chart-2: #9aa7b5;
+  --chart-3: #6f7b88;
+  --chart-4: #e8eaed;
+  --chart-5: #3a4049;
+  --radius: 0.55rem;
+  --sidebar: #1a1d22;
+  --sidebar-foreground: #e8eaed;
+  --sidebar-primary: #c5ccd4;
+  --sidebar-primary-foreground: #121417;
+  --sidebar-accent: #242830;
+  --sidebar-accent-foreground: #d5dae0;
+  --sidebar-border: color-mix(in oklab, #e8eaed 12%, #121417);
+  --sidebar-ring: #9aa7b5;
+}
+
+@keyframes legado-rise {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes legado-pop {
+  from { opacity: 0; transform: translateY(6px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes legado-glow {
+  from { opacity: 0.45; transform: translate3d(0, 0, 0) scale(1); }
+  to { opacity: 0.9; transform: translate3d(-4%, -3%, 0) scale(1.08); }
+}
+
+@keyframes matrix-scan {
+  from { opacity: 0; filter: brightness(1.4); transform: translateY(-6px); }
+  to { opacity: 1; filter: brightness(1); transform: translateY(0); }
+}
+@keyframes matrix-flicker {
+  0% { opacity: 0; }
+  40% { opacity: 0.4; }
+  55% { opacity: 0.15; }
+  100% { opacity: 1; }
+}
+@keyframes matrix-pulse {
+  0%, 100% { opacity: 0.35; }
+  50% { opacity: 0.8; }
+}
+
+@keyframes jarvis-rise {
+  from { opacity: 0; transform: translateY(8px) scale(0.99); filter: blur(2px); }
+  to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+}
+@keyframes jarvis-ring {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 0.85; transform: scale(1.06); }
+}
+
+@keyframes anime-float {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes anime-bounce {
+  from { opacity: 0; transform: scale(0.92); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes anime-sparkle {
+  0%, 100% { opacity: 0.35; transform: translate3d(0, 0, 0); }
+  50% { opacity: 0.85; transform: translate3d(-2%, -4%, 0); }
+}
+
+@keyframes pergamino-unfurl {
+  from { opacity: 0; transform: translateY(8px) rotate(-0.4deg); }
+  to { opacity: 1; transform: translateY(0) rotate(0); }
+}
+@keyframes pergamino-ink {
+  from { opacity: 0; filter: blur(1px); }
+  to { opacity: 1; filter: blur(0); }
+}
+@keyframes pergamino-lamp {
+  from { opacity: 0.35; }
+  to { opacity: 0.75; }
+}
+
+@keyframes noche-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes noche-breathe {
+  from { opacity: 0.2; }
+  to { opacity: 0.45; }
+}
