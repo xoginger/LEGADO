@@ -200,25 +200,42 @@ function applyTranslations(lang) {
   } catch {
     /* ignore */
   }
+  return next;
 }
 
+/** Public API for inline onclick + console debugging */
+function setLegadoLang(lang) {
+  return applyTranslations(lang);
+}
+window.setLegadoLang = setLegadoLang;
+
 function initLang() {
+  // Product default is Spanish. Only honor an explicit saved choice — never
+  // auto-switch from navigator.language (that made EN VMs look "stuck").
   let lang = "es";
   try {
     const saved = localStorage.getItem("legado-landing-lang");
     if (saved === "en" || saved === "es") lang = saved;
-    else if (navigator.language?.toLowerCase().startsWith("en")) lang = "en";
   } catch {
     /* ignore */
   }
   applyTranslations(lang);
 
-  // Event delegation so ES↔EN keeps working even if nodes are replaced
+  document.querySelectorAll(".lang-btn").forEach((btn) => {
+    btn.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      setLegadoLang(btn.getAttribute("data-lang"));
+    });
+  });
+
   document.addEventListener("click", (event) => {
-    const btn = event.target.closest(".lang-btn");
+    const target = event.target;
+    const el = target instanceof Element ? target : target?.parentElement;
+    const btn = el?.closest?.(".lang-btn");
     if (!btn) return;
     event.preventDefault();
-    applyTranslations(btn.getAttribute("data-lang"));
+    setLegadoLang(btn.getAttribute("data-lang"));
   });
 }
 
@@ -239,7 +256,13 @@ async function preferCanonicalBrandIcon() {
   }
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+function boot() {
   initLang();
   preferCanonicalBrandIcon();
-});
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", boot);
+} else {
+  boot();
+}
