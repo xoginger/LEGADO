@@ -31,6 +31,7 @@ import {
   type TextFileMap,
 } from "@legado/shared";
 import {
+  BookOpen,
   Camera,
   FolderOpen,
   Link2,
@@ -318,10 +319,22 @@ export function FuentesPanel({
           Perfil / Fuentes
         </h2>
         <p className="text-muted-foreground mt-1 text-sm leading-relaxed">
-          Crece el perfil del legado con fotos, frases y eventos importando el
-          export oficial de cada red. Todo queda en este equipo (local-first).
-          La conexión OAuth aún no está disponible.
+          Crece el perfil del legado con fotos, frases y eventos{" "}
+          <strong className="font-medium text-[var(--legado-ink)]">
+            importando el export oficial
+          </strong>{" "}
+          (ZIP / JSON / CSV / carpeta). Todo queda en este equipo. OAuth
+          automático está aplazado.
         </p>
+        <a
+          href="https://github.com/xoginger/LEGADO/blob/main/docs/es/redes.md"
+          target="_blank"
+          rel="noreferrer"
+          className="text-muted-foreground hover:text-foreground mt-2 inline-flex items-center gap-1.5 text-xs underline-offset-4 hover:underline"
+        >
+          <BookOpen className="size-3.5" />
+          Guía export → import · qué falta para conectar de verdad
+        </a>
       </div>
 
       {/* Perfil */}
@@ -403,8 +416,9 @@ export function FuentesPanel({
           Redes y álbumes
         </h3>
         <p className="text-muted-foreground mb-3 text-xs leading-relaxed">
-          Acción principal: importar el export oficial (ZIP, JSON o carpeta).
-          «Conectar» es solo un aviso de que OAuth llega después.
+          Acción principal: importar el export oficial (ZIP, JSON, CSV o
+          carpeta). «Conectar» solo avisa que OAuth está aplazado; no vincula
+          cuentas.
         </p>
         <ul className="grid gap-3 sm:grid-cols-2">
           {IMPORT_SOURCES.map((meta) => {
@@ -531,13 +545,14 @@ export function FuentesPanel({
               Conectar {connectModalMeta?.label ?? "fuente"} (próximamente)
             </DialogTitle>
             <DialogDescription>
-              LEGADO aún no inicia sesión en {connectModalMeta?.label ?? "esta red"}.
-              No hay OAuth real en este equipo: un clic aquí no vincula tu cuenta.
+              OAuth está aplazado: un clic aquí no vincula{" "}
+              {connectModalMeta?.label ?? "esta red"}. El camino oficial es
+              importar la descarga (export).
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-2 text-sm text-[var(--legado-ink)]/90">
             <p>
-              Para alimentar el perfil ahora, pide el{" "}
+              Pide el{" "}
               <strong className="font-medium">export oficial</strong> y usa{" "}
               <strong className="font-medium">
                 {connectModalMeta
@@ -551,6 +566,15 @@ export function FuentesPanel({
                 {connectModalMeta.exportHint}
               </p>
             ) : null}
+            <a
+              href="https://github.com/xoginger/LEGADO/blob/main/docs/es/oauth-fuentes.md"
+              target="_blank"
+              rel="noreferrer"
+              className="text-muted-foreground hover:text-foreground inline-flex items-center gap-1.5 text-xs underline-offset-4 hover:underline"
+            >
+              <BookOpen className="size-3.5" />
+              Qué falta para conectar de verdad (aplazado)
+            </a>
           </div>
           <DialogFooter>
             <Button

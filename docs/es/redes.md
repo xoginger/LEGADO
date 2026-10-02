@@ -1,6 +1,10 @@
-# Redes y perfil — alimentar el legado
+# Redes y perfil — export → import
 
-Cómo usar fuentes sociales y álbumes para crecer el **perfil** y la **base de conocimientos** (memorias), siempre **local-first**.
+**Camino oficial (decisión tomada):** alimentar el perfil **importando las descargas** (ZIP / JSON / JS / CSV / carpeta). No hay OAuth automático por ahora.
+
+En Entrenamiento → **Perfil / Fuentes**, la acción principal es **Importar archivo** o **Importar carpeta**. Todo se parsea **en tu equipo** (`localStorage` + `.legado-data/`).
+
+OAuth / «conectar de verdad» queda como **futuro opcional y aplazado**. Detalle técnico: [oauth-fuentes.md](./oauth-fuentes.md).
 
 ## Qué se importa
 
@@ -10,92 +14,89 @@ Cómo usar fuentes sociales y álbumes para crecer el **perfil** y la **base de 
 | **Frases / posts** | Captions, tweets, publicaciones | `frase` |
 | **Eventos** | Eventos de Facebook / calendario social | `evento` |
 
-Todo se normaliza a memorias locales (`localStorage` + `.legado-data/`). El chat de **Consulta** y **Entrenamiento** usa el perfil (nombre, bio) + esas memorias como contexto.
+El chat de **Consulta** y **Entrenamiento** usa el perfil (nombre, bio) + esas memorias.
 
-## Dónde vive
+## Flujo general (todas las fuentes)
 
-| Dato | Dónde |
-| --- | --- |
-| Perfil (nombre, bio, foto) | `legado.profile.v1` + disco |
-| Estado de fuentes | `legado.importSources.v1` |
-| Cola de importación | `legado.importJobs.v1` |
-| Memorias resultantes | Igual que el resto del legado |
-
-Nada de esto es el hogar de una nube ajena: los exports se leen **en el navegador / equipo**.
-
-## Fuentes (UI Perfil / Fuentes)
-
-Las cinco fuentes confirmadas aparecen siempre en Entrenamiento → **Perfil / Fuentes**:
-
-| Fuente | Camino usable hoy | «Conectar» |
-| --- | --- | --- |
-| **Instagram** | **Importar archivo** (ZIP/JSON de descarga de datos Meta) | Próximamente (modal; no vincula cuenta) |
-| **Facebook** | **Importar archivo** (ZIP/JSON export Meta: posts + eventos) | Próximamente (modal; no vincula cuenta) |
-| **X (Twitter)** | **Importar archivo** (JS/JSON/CSV/ZIP del archivo de X) | Próximamente (modal; no vincula cuenta) |
-| **Google Fotos** | **Importar archivo** (Google Takeout ZIP + JSON) | Próximamente (modal; no vincula cuenta) |
-| **Apple Fotos** | **Importar carpeta** / ZIP (export desde Fotos en Mac) | No aplica (solo local; sandbox macOS intacto) |
-
-### Cómo pedir el export oficial
-
-1. **Instagram:** Configuración → Tu actividad → Descargar información (JSON/ZIP).
-2. **Facebook:** Configuración → Tu información → Descargar tu información (JSON).
-3. **X:** Ajustes → Tu cuenta → Descargar un archivo de tus datos.
-4. **Google Fotos:** [Google Takeout](https://takeout.google.com) → Google Fotos.
-5. **Apple Fotos (Mac):** selecciona álbum → Archivo → Exportar → Exportar fotos sin modificar (carpeta o ZIP). Opcional: un `manifest.json` con `assets[]`.
-
-Cada tarjeta en la UI muestra un bloque **Cómo pedir el export** con la misma pista corta.
-
-### Honestidad: no hay OAuth falso
-
-- **Importar archivo / Importar carpeta** es la acción principal y el único camino que alimenta memorias hoy.
-- **Conectar (próximamente)** abre un modal que explica que **no** hay login real: hace falta el export oficial. No marca la fuente como «conectada a Instagram» (ni a FB/X/Google).
-- Estados en UI: **Sin importar** · **Listo para importar** (si quedó un estado demo antiguo) · **Importado** (tras un import exitoso). Nunca «conectado a …».
-- OAuth real queda documentado con variables opcionales; el MVP **no** llama a Meta/X/Google. Sin secrets no se inventa una conexión.
-
-## Privacidad (tensión OAuth)
-
-Las APIs de Meta, X y Google exigen registrar una app y, a menudo, mandar tráfico por sus servidores. Eso choca con **local-first**.
-
-LEGADO prioriza:
-
-1. Export oficial → parseo local → memorias.
-2. OAuth solo como mejora futura (nunca requisito del MVP).
-
-La foto de perfil se guarda como data URL en el equipo; no se sube a un servicio de LEGADO.
-
-## Uso rápido
-
-1. Arranca Entrenamiento: `npm run dev:entrenamiento` → http://127.0.0.1:43127  
-2. Pestaña **Perfil / Fuentes**.  
-3. Edita nombre/bio/foto.  
-4. En una fuente: lee **Cómo pedir el export** → **Importar archivo** o **Importar carpeta**.  
-5. Revisa la **cola** (vacío / carga / error / listo).  
-6. Ve a **Memorias** o **Conversar**: el perfil enriquecido influye el chat.
+1. En la red o app de fotos, pide el **export / descarga de datos** (pasos abajo).
+2. Espera el archivo o carpeta (a veces tarda horas/días; Meta y Google avisan por correo).
+3. Abre LEGADO Entrenamiento → http://127.0.0.1:43127 → pestaña **Perfil / Fuentes**.
+4. En la tarjeta de la fuente → **Importar archivo** (o **Importar carpeta** en Apple Fotos).
+5. Revisa la **cola** (vacío / cargando / listo / error).
+6. Ve a **Memorias** o **Conversar**: el perfil enriquecido ya cuenta como contexto.
 
 ### Fixture de prueba
 
-En el repo: `docs/fixtures/social-sample.json` — formato genérico LEGADO (`items[]` con `kind`: `frase` | `foto` | `evento`). Puedes importarlo eligiendo p. ej. Instagram u otra fuente que acepte JSON.
+`docs/fixtures/social-sample.json` — formato genérico LEGADO (`items[]` con `kind`: `frase` | `foto` | `evento`). Impórtalo eligiendo cualquier fuente que acepte JSON (p. ej. Instagram).
 
-## Variables de entorno (opcionales, futuras)
+---
 
-```bash
-# Meta (Instagram + Facebook) — futuras
-LEGADO_META_APP_ID=
-LEGADO_META_APP_SECRET=
+## Por fuente: export → import
 
-# X
-LEGADO_X_CLIENT_ID=
-LEGADO_X_CLIENT_SECRET=
+### Instagram
 
-# Google Fotos
-LEGADO_GOOGLE_CLIENT_ID=
-LEGADO_GOOGLE_CLIENT_SECRET=
-```
+| | |
+| --- | --- |
+| **En Instagram** | Configuración → Tu actividad → **Descargar información** (o Centro de cuentas → Tu información y permisos → Descargar tu información). Elige JSON (o ZIP que lo contenga). |
+| **Qué trae LEGADO** | Posts / captions → `frase` o `foto` según el ítem. |
+| **En LEGADO** | Perfil / Fuentes → Instagram → **Importar archivo** → elige el ZIP o JSON. |
 
-Sin ellas la app sigue usable al 100 % con import manual. Tenerlas no activa OAuth en este MVP.
+### Facebook
+
+| | |
+| --- | --- |
+| **En Facebook** | Configuración y privacidad → Tu información de Facebook → **Descargar tu información**. Formato JSON; incluye publicaciones y, si lo marcas, eventos. |
+| **Qué trae LEGADO** | Posts → `frase`/`foto`; eventos → `evento`. |
+| **En LEGADO** | Perfil / Fuentes → Facebook → **Importar archivo** → ZIP o JSON. |
+
+### X (Twitter)
+
+| | |
+| --- | --- |
+| **En X** | Ajustes y privacidad → Tu cuenta → **Descargar un archivo de tus datos**. Espera el correo; descarga el ZIP. |
+| **Qué trae LEGADO** | Tweets / media referenciados → `frase` / `foto` según el parseo. Acepta JS, JSON, CSV o ZIP. |
+| **En LEGADO** | Perfil / Fuentes → X → **Importar archivo** → ZIP o archivo suelto del archive. |
+
+### Google Fotos
+
+| | |
+| --- | --- |
+| **En Google** | [Google Takeout](https://takeout.google.com) → desmarca todo → marca **Google Fotos** → exportar (ZIP, a menudo varios). |
+| **Qué trae LEGADO** | Fotos + JSON de metadatos/captions → `foto` (y texto asociado si viene). |
+| **En LEGADO** | Perfil / Fuentes → Google Fotos → **Importar archivo** → el ZIP de Takeout (o JSON si aplica). |
+
+> Nota: no hace falta «conectar» Google con OAuth. Takeout es el camino bulk correcto.
+
+### Apple Fotos (Mac)
+
+| | |
+| --- | --- |
+| **En Fotos (Mac)** | Selecciona álbum o fotos → menú **Archivo → Exportar → Exportar fotos sin modificar** (carpeta) o comprime a ZIP. Opcional: un `manifest.json` con `assets[]` si lo tienes. |
+| **Qué trae LEGADO** | Imágenes (y captions del manifest si existe) → `foto`. |
+| **En LEGADO** | Perfil / Fuentes → Apple Fotos → **Importar carpeta** (o archivo ZIP). |
+
+> Apple no ofrece login OAuth web para la biblioteca personal. Solo export local.
+
+---
+
+## Estados en la UI
+
+| Badge | Significado |
+| --- | --- |
+| **Sin importar** | Aún no has traído un export. |
+| **Listo para importar** | Estado antiguo de demo; no implica cuenta vinculada. |
+| **Importado** | Hubo un import exitoso (ítems en memorias). |
+
+Nunca «conectado a Instagram/FB/…». El botón **Conectar (próximamente)** solo explica que OAuth está **aplazado**; no vincula nada.
+
+## Privacidad
+
+- Parseo **local**; los exports no se suben a un servidor de LEGADO.
+- OAuth automático está **aplazado** a propósito (local-first + decisión de producto). Si algún día se retoma: [oauth-fuentes.md](./oauth-fuentes.md).
 
 ## Relacionado
 
+- OAuth (futuro aplazado): [oauth-fuentes.md](./oauth-fuentes.md)
 - Uso general: [uso.md](./uso.md)
 - Plan: [plan.md](./plan.md)
 - English: [../en/social.md](../en/social.md)

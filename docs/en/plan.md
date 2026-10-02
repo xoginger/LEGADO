@@ -27,19 +27,20 @@ LEGADO is a personal AI trained on someone’s knowledge, memories, phrases, and
 ## MVP (this slice)
 
 - Local memories + text chat (Ollama preferred, mock fallback)
-- **Profile + social/album sources** (Instagram, Facebook, X, Google Photos, Apple Photos) — **Import file/folder** is the real path; OAuth is “coming soon” (no fake “connected” state). See [social.md](./social.md).
+- **Profile + social/album sources** — official path is **export → Import file/folder** (ZIP/JSON/CSV/folder). OAuth is **deferred**. See [social.md](./social.md).
 - Chat context includes **profile + memories** (fotos, frases, eventos)
 - Export/import JSON; optional shared disk store under `.legado-data/`
 - Empty / loading / error states (including import queue); desktop + mobile
-- **Out of scope:** live OAuth against Meta/X/Google, OS kiosk lockdown, heir auth, voice clone, avatar, cloud accounts
+- **Out of scope:** live OAuth (deferred — [oauth-sources.md](./oauth-sources.md)), OS kiosk lockdown, heir auth, voice clone, avatar, cloud accounts
 
 ## Later phases (summary)
 
 1. Stronger backup + local RAG embeddings  
-2. Cloned voice TTS + visual avatar (local-first preferred; hybrid clone-once / play-local if needed)  
-3. Roles (owner vs heir) + kiosk / appliance mode (OS is hidden, not removed)  
-4. Richer presence (speech style, rituals)  
-5. Cloud only if explicitly requested  
+2. **OAuth / automatic connect — DEFERRED** — documented only; titular uses exports. See [oauth-sources.md](./oauth-sources.md).  
+3. Cloned voice TTS + visual avatar (local-first preferred; hybrid clone-once / play-local if needed)  
+4. Roles (owner vs heir) + kiosk / appliance mode (OS is hidden, not removed)  
+5. Richer presence (speech style, rituals)  
+6. Cloud only if explicitly requested  
 
 ## Hardware
 
