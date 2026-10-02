@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="LEGADO">
+  <!-- Placeholder brand mark until packages/shared or brand/ icon lands.
+       Sibling agent owns the canonical icon; replace this file or point favicon to it. -->
+  <rect width="64" height="64" rx="14" fill="#14241e"/>
+  <path d="M18 16h10v32H18V16zm14 22h14v10H32V38z" fill="#d7e4dc"/>
+  <circle cx="46" cy="22" r="4" fill="#c9a45c"/>
+</svg>

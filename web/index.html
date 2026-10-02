@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="LEGADO — IA personal local-first: memorias, frases y conocimiento para tu familia. Open source (MIT)."
+    />
+    <meta name="theme-color" content="#14241e" />
+    <title>LEGADO — legado conversacional local-first</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,650;9..144,700&family=Source+Sans+3:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+    <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml" />
+  </head>
+  <body>
+    <div class="atmosphere" aria-hidden="true">
+      <div class="atmosphere__wash"></div>
+      <div class="atmosphere__mist"></div>
+      <div class="atmosphere__grain"></div>
+    </div>
+
+    <header class="site-header">
+      <a class="wordmark" href="#top" aria-label="LEGADO">
+        <img
+          class="wordmark__icon"
+          data-brand-icon
+          src="./assets/brand-icon.svg"
+          alt=""
+          width="28"
+          height="28"
+        />
+        <span>LEGADO</span>
+      </a>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="#que-es" data-i18n="nav.what">Qué es</a>
+        <a href="#apps" data-i18n="nav.apps">Apps</a>
+        <a href="#local" data-i18n="nav.local">Local-first</a>
+        <a href="#uso" data-i18n="nav.use">Cómo usar</a>
+        <a href="#temas" data-i18n="nav.skins">Temas</a>
+        <a href="#oss" data-i18n="nav.oss">Open source</a>
+      </nav>
+      <div class="header-actions">
+        <div class="lang-toggle" role="group" aria-label="Language">
+          <button type="button" class="lang-btn is-active" data-lang="es" aria-pressed="true">
+            ES
+          </button>
+          <button type="button" class="lang-btn" data-lang="en" aria-pressed="false">EN</button>
+        </div>
+        <a
+          class="btn btn--ghost btn--sm"
+          href="https://github.com/xoginger/LEGADO"
+          rel="noopener noreferrer"
+          data-i18n="nav.github"
+          >GitHub</a
+        >
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="hero" aria-labelledby="hero-brand">
+        <div class="hero__copy">
+          <p class="hero__brand" id="hero-brand">LEGADO</p>
+          <h1 class="hero__headline" data-i18n="hero.headline">
+            Un legado conversacional, en tu equipo.
+          </h1>
+          <p class="hero__lede" data-i18n="hero.lede">
+            Guarda memorias, frases y conocimientos. Cuando tú no estés, tu familia podrá seguir
+            escuchando tu criterio — en local, con cariño, sin entregar el hogar de la IA a la nube.
+          </p>
+          <div class="hero__cta">
+            <a
+              class="btn btn--primary"
+              href="https://github.com/xoginger/LEGADO"
+              rel="noopener noreferrer"
+              data-i18n="hero.ctaGithub"
+              >Ver en GitHub</a
+            >
+            <a
+              class="btn btn--secondary"
+              href="https://github.com/xoginger/LEGADO/blob/main/docs/es/uso.md"
+              rel="noopener noreferrer"
+              data-link="use"
+              data-i18n="hero.ctaDocs"
+              >Cómo usar LEGADO</a
+            >
+          </div>
+        </div>
+        <div class="hero__visual" aria-hidden="true">
+          <img
+            class="hero__scene"
+            src="./assets/hero-scene.svg"
+            alt=""
+            width="1200"
+            height="720"
+          />
+        </div>
+      </section>
+
+      <section class="section" id="que-es" aria-labelledby="what-title">
+        <p class="section__eyebrow" data-i18n="what.eyebrow">Qué es</p>
+        <h2 id="what-title" data-i18n="what.title">No es un chatbot genérico.</h2>
+        <p class="section__lede" data-i18n="what.lede">
+          LEGADO es una IA personal entrenada con lo que tú escribes: recuerdos, frases, comentarios
+          y saber práctico. Se alimenta con el tiempo. El tono es de continuidad y cariño — nunca de
+          dramatismo morboso.
+        </p>
+        <div class="split">
+          <article class="split__item">
+            <h3 data-i18n="what.forWhomTitle">Para quién</h3>
+            <p data-i18n="what.forWhom">
+              Para quien quiere dejar una presencia conversacional a hijos y familia: un lugar donde
+              preguntar, recordar y oír el criterio de quien escribió el legado.
+            </p>
+          </article>
+          <article class="split__item">
+            <h3 data-i18n="what.mvpTitle">Prioridad ahora</h3>
+            <p data-i18n="what.mvp">
+              Primero IA usable en texto: memorias + chat local. Voz clonada, avatar y modo quiosco
+              vienen después — no bloquean el primer slice.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section section--apps" id="apps" aria-labelledby="apps-title">
+        <p class="section__eyebrow" data-i18n="apps.eyebrow">Dos apps</p>
+        <h2 id="apps-title" data-i18n="apps.title">Entrenamiento y consulta.</h2>
+        <p class="section__lede" data-i18n="apps.lede">
+          Un monorepo, dos superficies claras. Lógica compartida en packages/shared.
+        </p>
+        <div class="apps">
+          <article class="app-block">
+            <p class="app-block__path">apps/entrenamiento</p>
+            <h3 data-i18n="apps.trainTitle">Entrenamiento</h3>
+            <p data-i18n="apps.trainBody">
+              Captura y edita memorias, configura el LLM local (Ollama) y prueba el chat. Aquí vive
+              quien construye el legado.
+            </p>
+          </article>
+          <article class="app-block">
+            <p class="app-block__path">apps/consulta</p>
+            <h3 data-i18n="apps.consultTitle">Consulta</h3>
+            <p data-i18n="apps.consultBody">
+              Interfaz para herederos: conversar con el legado. Importa JSON o comparte el store en
+              disco — sin cuenta en la nube.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="local" aria-labelledby="local-title">
+        <p class="section__eyebrow" data-i18n="local.eyebrow">Local-first</p>
+        <h2 id="local-title" data-i18n="local.title">Los datos viven en tu equipo.</h2>
+        <p class="section__lede" data-i18n="local.lede">
+          Memorias y chat en la máquina del legador. Ollama (o MLX en Mac) como runtime preferido; si
+          no hay modelo, hay fallback mock para no bloquearte. La nube ajena no es el hogar de la IA.
+        </p>
+        <ul class="pillars">
+          <li data-i18n="local.p1">Texto primero; voz y multimedia después.</li>
+          <li data-i18n="local.p2">Entrenamiento gradual — memoria a memoria.</li>
+          <li data-i18n="local.p3">Export / backup offline hacia quienes heredan.</li>
+        </ul>
+      </section>
+
+      <section class="section section--use" id="uso" aria-labelledby="use-title">
+        <p class="section__eyebrow" data-i18n="use.eyebrow">Cómo usar</p>
+        <h2 id="use-title" data-i18n="use.title">Requisitos, equipo y pasos.</h2>
+        <p class="section__lede" data-i18n="use.lede">
+          Tres piezas que siempre documentamos: qué necesitas, cómo preparar la máquina, y cómo
+          usarlo día a día.
+        </p>
+        <ol class="use-steps">
+          <li>
+            <h3 data-i18n="use.reqTitle">1. Requisitos mínimos</h3>
+            <p data-i18n="use.reqBody">
+              Node.js 20+, Git, navegador actual. Mac / Windows / Linux. Ollama opcional (sin él hay
+              mock). Chat local cómodo: ~16 GB RAM para 7B; ver guía de uso y equipo-local.
+            </p>
+          </li>
+          <li>
+            <h3 data-i18n="use.setupTitle">2. Configurar el equipo</h3>
+            <p data-i18n="use.setupBody">
+              Instala Node → clona el repo → npm install → (opcional) Ollama + ollama pull llama3.2 →
+              arranca entrenamiento en :43127 y consulta en :43128. En MacBook Air con poco disco
+              interno: /Volumes/XR/LEGADO.
+            </p>
+          </li>
+          <li>
+            <h3 data-i18n="use.stepsTitle">3. Instrucciones de uso</h3>
+            <p data-i18n="use.stepsBody">
+              Primero Entrenamiento: memorias → chat. Exporta JSON. Luego Consulta: importar y
+              conversar. Temas/skins se eligen en las apps cuando existan.
+            </p>
+          </li>
+        </ol>
+        <div class="hero__cta">
+          <a
+            class="btn btn--primary"
+            href="https://github.com/xoginger/LEGADO/blob/main/docs/es/uso.md"
+            rel="noopener noreferrer"
+            data-link="use"
+            data-i18n="use.cta"
+            >Abrir guía completa (ES)</a
+          >
+        </div>
+      </section>
+
+      <section class="section" id="temas" aria-labelledby="skins-title">
+        <p class="section__eyebrow" data-i18n="skins.eyebrow">Personaliza la interfaz</p>
+        <h2 id="skins-title" data-i18n="skins.title">Temas visuales (preview).</h2>
+        <p class="section__lede" data-i18n="skins.lede">
+          El selector completo vive en las apps. Aquí solo un vistazo — icono y skins canónicos los
+          aporta el agente de marca cuando aterrizan en el repo.
+        </p>
+        <div class="skins" role="list">
+          <figure class="skin" role="listitem">
+            <img src="./assets/skins/default.svg" alt="" width="320" height="200" />
+            <figcaption data-i18n="skins.default">Por defecto</figcaption>
+          </figure>
+          <figure class="skin" role="listitem">
+            <img src="./assets/skins/matrix.svg" alt="" width="320" height="200" />
+            <figcaption data-i18n="skins.matrix">Matrix</figcaption>
+          </figure>
+          <figure class="skin" role="listitem">
+            <img src="./assets/skins/jarvis.svg" alt="" width="320" height="200" />
+            <figcaption data-i18n="skins.jarvis">Jarvis</figcaption>
+          </figure>
+          <figure class="skin" role="listitem">
+            <img src="./assets/skins/anime.svg" alt="" width="320" height="200" />
+            <figcaption data-i18n="skins.anime">Anime</figcaption>
+          </figure>
+        </div>
+        <p class="skins__note" data-i18n="skins.note">
+          Placeholders en web/assets/skins/. Si aparecen brand/ o packages/shared/brand/, la landing
+          los preferirá.
+        </p>
+      </section>
+
+      <section class="section section--oss" id="oss" aria-labelledby="oss-title">
+        <p class="section__eyebrow" data-i18n="oss.eyebrow">Open source</p>
+        <h2 id="oss-title" data-i18n="oss.title">MIT. Gratis. Donativos opcionales.</h2>
+        <p class="section__lede" data-i18n="oss.lede">
+          Usa LEGADO sin coste bajo licencia MIT. Si te sirve, puedes apoyar el desarrollo en Ko-fi
+          (pagos vía Stripe). Ningún donativo es requisito para entrenar, consultar o exportar.
+        </p>
+        <div class="hero__cta">
+          <a
+            class="btn btn--primary"
+            href="https://github.com/xoginger/LEGADO"
+            rel="noopener noreferrer"
+            data-i18n="oss.ctaGithub"
+            >Repositorio</a
+          >
+          <a
+            class="btn btn--secondary"
+            href="https://ko-fi.com/xoginger"
+            rel="noopener noreferrer"
+            data-i18n="oss.ctaKofi"
+            >Apoyar en Ko-fi</a
+          >
+          <a
+            class="btn btn--ghost"
+            href="https://github.com/xoginger/LEGADO/blob/main/README.es.md"
+            rel="noopener noreferrer"
+            data-link="readme"
+            data-i18n="oss.ctaReadme"
+            >README del repo</a
+          >
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="site-footer__brand">
+        <span class="wordmark wordmark--footer">LEGADO</span>
+        <p data-i18n="footer.tag">Open source · MIT · local-first</p>
+      </div>
+      <div class="site-footer__links">
+        <a href="https://github.com/xoginger/LEGADO" rel="noopener noreferrer">GitHub</a>
+        <a
+          href="https://github.com/xoginger/LEGADO/blob/main/docs/es/uso.md"
+          rel="noopener noreferrer"
+          data-link="use"
+          data-i18n="footer.use"
+          >Cómo usar</a
+        >
+        <a
+          href="https://github.com/xoginger/LEGADO/tree/main/docs"
+          rel="noopener noreferrer"
+          data-i18n="footer.docs"
+          >Docs</a
+        >
+        <a href="https://ko-fi.com/xoginger" rel="noopener noreferrer">Ko-fi</a>
+        <a
+          href="https://github.com/xoginger/LEGADO/blob/main/LICENSE"
+          rel="noopener noreferrer"
+          >MIT</a
+        >
+      </div>
+    </footer>
+
+    <script src="./main.js" defer></script>
+  </body>
+</html>

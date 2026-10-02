@@ -2,7 +2,12 @@
 
 **Gratis y open source.** IA personal local-first: captura tus memorias, frases y conocimientos; más adelante, tu familia puede conversar con esa presencia.
 
-> English README: [README.md](./README.md)
+> English README: [README.md](./README.md)  
+> **Sitio:** [https://xoginger.github.io/LEGADO/](https://xoginger.github.io/LEGADO/) (`web/` → GitHub Pages)
+
+## Cómo usar
+
+Empieza aquí: **[docs/es/uso.md](./docs/es/uso.md)** — requisitos mínimos, configuración del equipo e instrucciones paso a paso (Entrenamiento → Consulta). English: [docs/en/usage.md](./docs/en/usage.md).
 
 ## Dos aplicaciones
 
@@ -33,9 +38,11 @@ LEGADO es gratuito bajo la [licencia MIT](./LICENSE). Si te sirve, puedes apoyar
 
 | Tema | Español | English |
 | --- | --- | --- |
+| **Cómo usar** (requisitos, equipo, pasos) | [docs/es/uso.md](./docs/es/uso.md) | [docs/en/usage.md](./docs/en/usage.md) |
 | Plan / arquitectura | [docs/es/plan.md](./docs/es/plan.md) | [docs/en/plan.md](./docs/en/plan.md) |
 | Guía de equipo local | [docs/es/equipo-local.md](./docs/es/equipo-local.md) | [docs/en/hardware.md](./docs/en/hardware.md) |
 | Contribuir | [docs/es/contribuir.md](./docs/es/contribuir.md) | [docs/en/contributing.md](./docs/en/contributing.md) |
+| Landing pública (Pages) | [web/](./web/) · [web/README.md](./web/README.md) | — |
 | Código de conducta | [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md) | — |
 
 ## Licencia
