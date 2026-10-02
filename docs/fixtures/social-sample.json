@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "source": "legado-fixture",
+  "items": [
+    {
+      "kind": "frase",
+      "title": "Sobre la paciencia",
+      "content": "La prisa no cocina el mole. Dale tiempo a lo que importa.",
+      "occurredAt": "2022-05-14T18:00:00.000Z"
+    },
+    {
+      "kind": "foto",
+      "title": "Domingo en el jardín",
+      "content": "Con los niños debajo del limonero. Luz de tarde.",
+      "occurredAt": "2021-08-01T16:30:00.000Z"
+    },
+    {
+      "kind": "evento",
+      "title": "Graduación de Ana",
+      "content": "Graduación de Ana — salón del colegio, junio 2019. Nos sentamos al frente.",
+      "occurredAt": "2019-06-20T17:00:00.000Z"
+    },
+    {
+      "kind": "frase",
+      "title": "Consejo de trabajo",
+      "content": "Si no cabe en una servilleta, aún no está claro.",
+      "occurredAt": "2020-11-03T12:00:00.000Z"
+    }
+  ]
+}

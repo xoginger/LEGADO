@@ -1,6 +1,13 @@
 import { NextResponse } from "next/server";
 import { patchDiskStore, readDiskStore } from "@legado/shared/disk";
-import type { ChatMessage, Memory, Settings } from "@legado/shared";
+import type {
+  ChatMessage,
+  ImportJob,
+  ImportSourceState,
+  LegadoProfile,
+  Memory,
+  Settings,
+} from "@legado/shared";
 
 export const runtime = "nodejs";
 
@@ -14,11 +21,17 @@ export async function PUT(request: Request) {
       memories?: Memory[];
       messages?: ChatMessage[];
       settings?: Settings;
+      profile?: LegadoProfile;
+      importSources?: ImportSourceState[];
+      importJobs?: ImportJob[];
     };
     const next = patchDiskStore({
       ...(body.memories ? { memories: body.memories } : {}),
       ...(body.messages ? { messages: body.messages } : {}),
       ...(body.settings ? { settings: body.settings } : {}),
+      ...(body.profile ? { profile: body.profile } : {}),
+      ...(body.importSources ? { importSources: body.importSources } : {}),
+      ...(body.importJobs ? { importJobs: body.importJobs } : {}),
     });
     return NextResponse.json(next);
   } catch (error) {

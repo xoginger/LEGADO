@@ -39,6 +39,7 @@ LEGADO is free under the [MIT License](./LICENSE). If it helps you, you can supp
 | Topic | English | Español |
 | --- | --- | --- |
 | **How to use** (requirements, setup, steps, themes) | [docs/en/usage.md](./docs/en/usage.md) | [docs/es/uso.md](./docs/es/uso.md) |
+| Social / profile (import) | [docs/en/social.md](./docs/en/social.md) | [docs/es/redes.md](./docs/es/redes.md) |
 | Product plan / architecture | [docs/en/plan.md](./docs/en/plan.md) | [docs/es/plan.md](./docs/es/plan.md) |
 | Local hardware guide | [docs/en/hardware.md](./docs/en/hardware.md) | [docs/es/equipo-local.md](./docs/es/equipo-local.md) |
 | Contributing | [docs/en/contributing.md](./docs/en/contributing.md) | [docs/es/contribuir.md](./docs/es/contribuir.md) |

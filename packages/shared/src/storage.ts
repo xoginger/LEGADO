@@ -1,5 +1,17 @@
-import type { ChatMessage, LegadoExport, Memory, Settings } from "./types";
-import { DEFAULT_SETTINGS } from "./types";
+import type {
+  ChatMessage,
+  ImportJob,
+  ImportSourceState,
+  LegadoExport,
+  LegadoProfile,
+  Memory,
+  Settings,
+} from "./types";
+import {
+  DEFAULT_PROFILE,
+  DEFAULT_SETTINGS,
+  defaultImportSourceStates,
+} from "./types";
 import {
   DEFAULT_THEME_ID,
   isThemeId,
@@ -10,6 +22,9 @@ import {
 const MEMORIES_KEY = "legado.memories.v1";
 const MESSAGES_KEY = "legado.messages.v1";
 const SETTINGS_KEY = "legado.settings.v1";
+const PROFILE_KEY = "legado.profile.v1";
+const IMPORT_SOURCES_KEY = "legado.importSources.v1";
+const IMPORT_JOBS_KEY = "legado.importJobs.v1";
 
 function safeParse<T>(raw: string | null, fallback: T): T {
   if (!raw) return fallback;
@@ -77,15 +92,71 @@ export function saveSettings(settings: Settings): void {
   }
 }
 
+export function loadProfile(): LegadoProfile {
+  if (typeof window === "undefined") return { ...DEFAULT_PROFILE };
+  const raw = safeParse<Partial<LegadoProfile>>(
+    localStorage.getItem(PROFILE_KEY),
+    {},
+  );
+  const settings = loadSettings();
+  return {
+    displayName:
+      raw.displayName?.trim() ||
+      settings.personName ||
+      DEFAULT_PROFILE.displayName,
+    bio: raw.bio ?? "",
+    photoDataUrl: raw.photoDataUrl ?? "",
+    updatedAt: raw.updatedAt ?? DEFAULT_PROFILE.updatedAt,
+  };
+}
+
+export function saveProfile(profile: LegadoProfile): void {
+  localStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
+}
+
+export function loadImportSources(): ImportSourceState[] {
+  if (typeof window === "undefined") return defaultImportSourceStates();
+  const raw = safeParse<ImportSourceState[]>(
+    localStorage.getItem(IMPORT_SOURCES_KEY),
+    [],
+  );
+  const defaults = defaultImportSourceStates();
+  if (!Array.isArray(raw) || raw.length === 0) return defaults;
+  return defaults.map((d) => {
+    const found = raw.find((r) => r.id === d.id);
+    return found ? { ...d, ...found, id: d.id } : d;
+  });
+}
+
+export function saveImportSources(sources: ImportSourceState[]): void {
+  localStorage.setItem(IMPORT_SOURCES_KEY, JSON.stringify(sources));
+}
+
+export function loadImportJobs(): ImportJob[] {
+  if (typeof window === "undefined") return [];
+  const data = safeParse<ImportJob[]>(
+    localStorage.getItem(IMPORT_JOBS_KEY),
+    [],
+  );
+  return Array.isArray(data) ? data : [];
+}
+
+export function saveImportJobs(jobs: ImportJob[]): void {
+  // Keep last 40 jobs
+  localStorage.setItem(IMPORT_JOBS_KEY, JSON.stringify(jobs.slice(0, 40)));
+}
+
 export function buildExport(
   personName: string,
   memories: Memory[],
+  profile?: LegadoProfile,
 ): LegadoExport {
   return {
     version: 1,
     exportedAt: new Date().toISOString(),
     personName,
     memories,
+    ...(profile ? { profile } : {}),
   };
 }
 

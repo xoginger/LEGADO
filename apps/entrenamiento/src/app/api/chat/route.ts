@@ -1,6 +1,11 @@
 import { NextResponse } from "next/server";
 import { buildMockReply, buildSystemPrompt, rankMemories } from "@legado/shared";
-import type { ChatMessage, LlmProvider, Memory } from "@legado/shared";
+import type {
+  ChatMessage,
+  LegadoProfile,
+  LlmProvider,
+  Memory,
+} from "@legado/shared";
 
 export const runtime = "nodejs";
 
@@ -9,6 +14,7 @@ type ChatRequestBody = {
   memories?: Memory[];
   history?: Pick<ChatMessage, "role" | "content">[];
   personName?: string;
+  profile?: LegadoProfile | null;
   provider?: LlmProvider;
   ollamaBaseUrl?: string;
   ollamaModel?: string;
@@ -23,9 +29,14 @@ function openaiStyleMessages(
   memories: Memory[],
   history: Pick<ChatMessage, "role" | "content">[],
   message: string,
+  profile?: LegadoProfile | null,
 ) {
   const ranked = rankMemories(message, memories, 8);
-  const system = buildSystemPrompt(personName, ranked.length ? ranked : memories);
+  const system = buildSystemPrompt(
+    personName,
+    ranked.length ? ranked : memories,
+    profile,
+  );
   return [
     { role: "system" as const, content: system },
     ...history.map((m) => ({
@@ -100,11 +111,12 @@ export async function POST(request: Request) {
     const body = (await request.json()) as ChatRequestBody;
     const message = (body.message ?? "").trim();
     const memories = Array.isArray(body.memories) ? body.memories : [];
-    const personName = (body.personName ?? "Yo").trim() || "Yo";
+    const profile = body.profile ?? null;
+    const personName =
+      (profile?.displayName || body.personName || "Yo").trim() || "Yo";
     const history = Array.isArray(body.history) ? body.history.slice(-12) : [];
 
     let provider: LlmProvider = body.provider ?? "ollama";
-    // Compat con settings antiguos
     if (!body.provider && body.useApi && (body.openaiApiKey || body.apiKey)) {
       provider = "openai";
     }
@@ -124,7 +136,7 @@ export async function POST(request: Request) {
 
     if (provider === "mock") {
       return NextResponse.json({
-        reply: buildMockReply(message, memories, personName),
+        reply: buildMockReply(message, memories, personName, profile),
         source: "mock" as const,
       });
     }
@@ -134,6 +146,7 @@ export async function POST(request: Request) {
       memories,
       history,
       message,
+      profile,
     );
 
     if (provider === "ollama") {
@@ -147,7 +160,7 @@ export async function POST(request: Request) {
       } catch (err) {
         console.error("Ollama fallback → mock", err);
         return NextResponse.json({
-          reply: buildMockReply(message, memories, personName),
+          reply: buildMockReply(message, memories, personName, profile),
           source: "mock" as const,
           warning:
             "No hay runtime local disponible (¿Ollama encendido y modelo descargado?). Respondí en modo mock con tus memorias.",
@@ -158,7 +171,7 @@ export async function POST(request: Request) {
     if (provider === "openai") {
       if (!openaiApiKey) {
         return NextResponse.json({
-          reply: buildMockReply(message, memories, personName),
+          reply: buildMockReply(message, memories, personName, profile),
           source: "mock" as const,
           warning:
             "Falta la API key. Usé el mock local. En local-first preferimos Ollama.",
@@ -170,7 +183,7 @@ export async function POST(request: Request) {
       } catch (err) {
         console.error("OpenAI fallback → mock", err);
         return NextResponse.json({
-          reply: buildMockReply(message, memories, personName),
+          reply: buildMockReply(message, memories, personName, profile),
           source: "mock" as const,
           warning:
             "Falló la API cloud. Respondí con el mock local a partir de tus memorias.",
@@ -179,7 +192,7 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json({
-      reply: buildMockReply(message, memories, personName),
+      reply: buildMockReply(message, memories, personName, profile),
       source: "mock" as const,
     });
   } catch (error) {

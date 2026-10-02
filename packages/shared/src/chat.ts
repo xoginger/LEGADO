@@ -1,4 +1,5 @@
-import type { Memory } from "./types";
+import type { LegadoProfile, Memory } from "./types";
+import { DEFAULT_PROFILE } from "./types";
 
 function tokenize(text: string): string[] {
   return text
@@ -30,6 +31,10 @@ export function rankMemories(query: string, memories: Memory[], limit = 5): Memo
           score += 1;
         }
       }
+      // Prefer profile-fed social kinds slightly when query mentions foto/evento
+      if (m.kind === "foto" && /foto|imagen|album|álbum/i.test(query)) score += 2;
+      if (m.kind === "evento" && /evento|fiesta|reunion|reunión|cumple/i.test(query))
+        score += 2;
       return { m, score };
     })
     .sort((a, b) => b.score - a.score || b.m.updatedAt.localeCompare(a.m.updatedAt))
@@ -46,21 +51,37 @@ function pickOpening(personName: string): string {
   return openings[Math.floor(Math.random() * openings.length)];
 }
 
+function resolveName(personName: string, profile?: LegadoProfile | null): string {
+  return (profile?.displayName || personName || "Yo").trim() || "Yo";
+}
+
+function profileBlock(profile?: LegadoProfile | null): string {
+  if (!profile) return "";
+  const bio = profile.bio?.trim();
+  if (!bio) return "";
+  return `\nPerfil / bio de ${profile.displayName || "la persona"}:\n${bio}\n`;
+}
+
 export function buildMockReply(
   userMessage: string,
   memories: Memory[],
   personName: string,
+  profile?: LegadoProfile | null,
 ): string {
-  if (memories.length === 0) {
+  const name = resolveName(personName, profile);
+  const bio = profile?.bio?.trim();
+
+  if (memories.length === 0 && !bio) {
     return (
-      `Aún no hay memorias guardadas de ${personName}. ` +
+      `Aún no hay memorias guardadas de ${name}. ` +
       `Cuando se escriba el primer recuerdo, la primera frase o un consejo, ` +
-      `podré responderte con esa voz. Por ahora, este espacio está listo para empezar.`
+      `o se importen fotos y posts desde redes, podré responderte con esa voz. ` +
+      `Por ahora, este espacio está listo para empezar.`
     );
   }
 
   const selected = rankMemories(userMessage, memories, 3);
-  const opening = pickOpening(personName);
+  const opening = pickOpening(name);
 
   const pieces = selected.map((m) => {
     const label =
@@ -70,47 +91,70 @@ export function buildMockReply(
           ? "comentó"
           : m.kind === "conocimiento"
             ? "quería que se recordara"
-            : "recordaba";
+            : m.kind === "foto"
+              ? "guardó en una foto"
+              : m.kind === "evento"
+                ? "vivió en un evento"
+                : "recordaba";
     const titleBit = m.title.trim() ? ` («${m.title.trim()}»)` : "";
-    return `${personName} ${label}${titleBit}: «${m.content.trim()}»`;
+    return `${name} ${label}${titleBit}: «${m.content.trim()}»`;
   });
 
+  const bioLine = bio
+    ? `${name} se describe así: «${bio}»`
+    : null;
+
   const bridge =
-    selected.length === 1
-      ? "Con eso en mente, te diría:"
-      : "Entre lo que dejó escrito, esto encaja con lo que preguntas:";
+    selected.length === 0 && bioLine
+      ? "Con el perfil en mente:"
+      : selected.length === 1
+        ? "Con eso en mente, te diría:"
+        : "Entre lo que dejó escrito (e importado al perfil), esto encaja con lo que preguntas:";
 
   const closing =
     "Si quieres, pregunta otra cosa: un consejo, una historia, o cómo veía la vida. " +
-    "Este legado crece con cada memoria que se añade.";
+    "Este legado crece con cada memoria y cada importación al perfil.";
 
-  return [opening, "", bridge, ...pieces.map((p) => `• ${p}`), "", closing].join(
-    "\n",
-  );
+  return [
+    opening,
+    "",
+    bridge,
+    ...(bioLine ? [`• ${bioLine}`] : []),
+    ...pieces.map((p) => `• ${p}`),
+    "",
+    closing,
+  ].join("\n");
 }
 
-export function buildSystemPrompt(personName: string, memories: Memory[]): string {
+export function buildSystemPrompt(
+  personName: string,
+  memories: Memory[],
+  profile?: LegadoProfile | null,
+): string {
+  const name = resolveName(personName, profile);
   const memoryBlock =
     memories.length === 0
-      ? "(Sin memorias aún. Invita con calidez a que se escriban.)"
+      ? "(Sin memorias aún. Invita con calidez a que se escriban o se importen desde fuentes.)"
       : memories
           .map(
             (m, i) =>
-              `${i + 1}. [${m.kind}] ${m.title || "(sin título)"}: ${m.content}`,
+              `${i + 1}. [${m.kind}${m.sourceId ? ` · ${m.sourceId}` : ""}] ${m.title || "(sin título)"}: ${m.content}`,
           )
           .join("\n");
 
-  return `Eres la presencia conversacional de LEGADO: una IA personal que habla en nombre del legado de «${personName}».
+  const p = profile ?? DEFAULT_PROFILE;
+
+  return `Eres la presencia conversacional de LEGADO: una IA personal que habla en nombre del legado de «${name}».
 
 Tono: cálido, cercano, sereno. Es un recuerdo vivo y un contacto póstumo potencial para la familia, pero NUNCA siniestro, funerario frío ni dramático. Habla de continuidad, cariño y lo que se dejó dicho.
-
+${profileBlock(p)}
 Reglas:
 - Responde siempre en español.
-- Basa tus respuestas en las memorias proporcionadas. Si algo no está en las memorias, dilo con honestidad y suavidad; no inventes biografía.
+- Basa tus respuestas en el perfil y las memorias proporcionadas (incluye fotos, frases y eventos importados de redes). Si algo no está ahí, dilo con honestidad y suavidad; no inventes biografía.
 - Puedes parafrasear con naturalidad, pero no contradigas lo escrito.
 - Sé conciso: un párrafo o dos, salvo que pidan más detalle.
 - No digas que eres un modelo de OpenAI ni menciones sistemas internos.
 
-Memorias de ${personName}:
+Memorias de ${name}:
 ${memoryBlock}`;
 }

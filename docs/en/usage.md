@@ -108,9 +108,10 @@ If a port is busy, stop other `next dev` processes or free 43127/43128.
 ### Step A — Training first
 
 1. Open http://127.0.0.1:43127
-2. Create **3–5 memories** (phrase, recollection, comment, knowledge).
-3. Open **chat** in the same app and ask something that only exists in those memories.
-4. With Ollama: confirm local-model answers. Without: **mock** uses your memory text.
+2. Create **3–5 memories** (phrase, recollection, comment, knowledge, photo, or event).
+3. (Optional) In **Perfil / Fuentes**, edit the profile and import social/album exports — see [social.md](./social.md).
+4. Open **chat** in the same app and ask something that only exists in those memories.
+5. With Ollama: confirm local-model answers. Without: **mock** uses your memory text.
 
 ### Step B — Export
 
@@ -133,6 +134,7 @@ When the theme picker ships in Training/Consultation, choose a skin in app setti
 - [ ] Node 20+ and `npm install` OK  
 - [ ] Training on `:43127`  
 - [ ] Memories created + chat tried (mock or Ollama)  
+- [ ] (Optional) Profile / Sources: import at least one network or album  
 - [ ] JSON export  
 - [ ] Consultation on `:43128` with import  
 - [ ] Offline (no third-party cloud required)
@@ -147,12 +149,14 @@ When the theme picker ships in Training/Consultation, choose a skin in app setti
 | Port in use | Stop other Next apps; confirm 43127 / 43128 |
 | Ollama not connecting | `curl http://127.0.0.1:11434` and Training settings |
 | Low disk on Mac | Clone to `/Volumes/XR/LEGADO` (see above) |
+| Empty social import | Use an official JSON/ZIP export; see [social.md](./social.md) |
 
 ---
 
 ## Links
 
 - Plan: [plan.md](./plan.md)
+- Social / profile: [social.md](./social.md)
 - Hardware: [hardware.md](./hardware.md) · [equipo-local.md](../es/equipo-local.md)
 - Contributing: [contributing.md](./contributing.md)
 - Donations: [../../DONATIONS.md](../../DONATIONS.md) · [Ko-fi](https://ko-fi.com/xoginger)
