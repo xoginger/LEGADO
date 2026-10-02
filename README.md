@@ -6,8 +6,8 @@ IA personal entrenada con tus conocimientos, recuerdos, frases y comentarios. La
 
 - **Memorias locales**: crear, editar y eliminar recuerdos, frases, comentarios y conocimientos (guardados en el navegador).
 - **Chat**: conversación en español que usa esas memorias como contexto.
-- **Modo local** por defecto (sin API key) y opción de pegar una API key de OpenAI en Ajustes.
-- **Exportar memorias** a JSON desde Ajustes (base para compartir más adelante).
+- **Local-first**: motor preferido **Ollama** en `localhost`; **mock** si no hay modelo; API cloud solo como escape hatch.
+- **Exportar memorias** a JSON desde Ajustes (base para backup/herederos).
 - Interfaz en español, usable en escritorio y móvil.
 
 ## Cómo correrlo

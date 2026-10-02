@@ -18,12 +18,22 @@ export interface Memory {
 
 export type ChatRole = "user" | "assistant";
 
+export type ChatSource = "mock" | "ollama" | "openai";
+
+export type LlmProvider = "mock" | "ollama" | "openai";
+
+export const LLM_PROVIDER_LABELS: Record<LlmProvider, string> = {
+  mock: "Mock local (sin modelo)",
+  ollama: "Ollama / runtime local",
+  openai: "API cloud (opcional)",
+};
+
 export interface ChatMessage {
   id: string;
   role: ChatRole;
   content: string;
   createdAt: string;
-  source?: "mock" | "api";
+  source?: ChatSource;
 }
 
 export interface LegadoExport {
@@ -35,12 +45,18 @@ export interface LegadoExport {
 
 export interface Settings {
   personName: string;
-  apiKey: string;
-  useApi: boolean;
+  /** Preferido: Ollama en localhost. Mock si no hay modelo. Cloud solo escape hatch. */
+  provider: LlmProvider;
+  ollamaBaseUrl: string;
+  ollamaModel: string;
+  /** Escape hatch; no es el camino local-first. */
+  openaiApiKey: string;
 }
 
 export const DEFAULT_SETTINGS: Settings = {
   personName: "Yo",
-  apiKey: "",
-  useApi: false,
+  provider: "ollama",
+  ollamaBaseUrl: "http://127.0.0.1:11434",
+  ollamaModel: "llama3.2",
+  openaiApiKey: "",
 };

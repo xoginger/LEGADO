@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -13,8 +13,20 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { downloadExport, buildExport } from "@/lib/storage";
-import type { Memory, Settings } from "@/lib/types";
+import {
+  LLM_PROVIDER_LABELS,
+  type LlmProvider,
+  type Memory,
+  type Settings,
+} from "@/lib/types";
 import { Settings2 } from "lucide-react";
 
 type Props = {
@@ -31,11 +43,6 @@ export function SettingsDialog({ settings, memories, onSave }: Props) {
     if (open) setDraft(settings);
   }, [open, settings]);
 
-  const canUseApi = useMemo(
-    () => draft.apiKey.trim().length > 0,
-    [draft.apiKey],
-  );
-
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger
@@ -44,12 +51,12 @@ export function SettingsDialog({ settings, memories, onSave }: Props) {
         <Settings2 className="size-4" />
         Ajustes
       </DialogTrigger>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>Ajustes del legado</DialogTitle>
           <DialogDescription>
-            Nombre de la persona, modo de respuesta y respaldo local. Las
-            memorias viven en este navegador.
+            Local-first: memorias en este navegador y modelo en tu máquina
+            (Ollama). El mock cubre si aún no hay runtime.
           </DialogDescription>
         </DialogHeader>
 
@@ -67,46 +74,87 @@ export function SettingsDialog({ settings, memories, onSave }: Props) {
           </div>
 
           <div className="grid gap-2">
-            <Label htmlFor="apiKey">API key (opcional)</Label>
-            <Input
-              id="apiKey"
-              type="password"
-              autoComplete="off"
-              value={draft.apiKey}
-              onChange={(e) =>
-                setDraft((s) => ({
-                  ...s,
-                  apiKey: e.target.value,
-                  useApi: e.target.value.trim().length > 0 ? s.useApi : false,
-                }))
-              }
-              placeholder="sk-… (OpenAI)"
-            />
-            <p className="text-muted-foreground text-xs leading-relaxed">
-              Sin key, LEGADO responde en modo local con tus memorias. La key se
-              guarda solo en este navegador y se usa desde tu máquina.
-            </p>
+            <Label>Motor de respuesta</Label>
+            <Select
+              value={draft.provider}
+              onValueChange={(value) => {
+                if (!value) return;
+                setDraft((s) => ({ ...s, provider: value as LlmProvider }));
+              }}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {(Object.keys(LLM_PROVIDER_LABELS) as LlmProvider[]).map(
+                  (provider) => (
+                    <SelectItem key={provider} value={provider}>
+                      {LLM_PROVIDER_LABELS[provider]}
+                    </SelectItem>
+                  ),
+                )}
+              </SelectContent>
+            </Select>
           </div>
 
-          <label className="flex items-start gap-3 rounded-lg border border-border/80 bg-muted/40 px-3 py-3 text-sm">
-            <input
-              type="checkbox"
-              className="mt-1 size-4 accent-[var(--legado-ink)]"
-              checked={draft.useApi && canUseApi}
-              disabled={!canUseApi}
-              onChange={(e) =>
-                setDraft((s) => ({ ...s, useApi: e.target.checked }))
-              }
-            />
-            <span>
-              <span className="font-medium text-foreground">
-                Usar API cuando haya key
-              </span>
-              <span className="text-muted-foreground mt-0.5 block text-xs">
-                Si falla la API, se cae al modo local automáticamente.
-              </span>
-            </span>
-          </label>
+          {draft.provider === "ollama" ? (
+            <>
+              <div className="grid gap-2">
+                <Label htmlFor="ollamaUrl">URL de Ollama</Label>
+                <Input
+                  id="ollamaUrl"
+                  value={draft.ollamaBaseUrl}
+                  onChange={(e) =>
+                    setDraft((s) => ({ ...s, ollamaBaseUrl: e.target.value }))
+                  }
+                  placeholder="http://127.0.0.1:11434"
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="ollamaModel">Modelo</Label>
+                <Input
+                  id="ollamaModel"
+                  value={draft.ollamaModel}
+                  onChange={(e) =>
+                    setDraft((s) => ({ ...s, ollamaModel: e.target.value }))
+                  }
+                  placeholder="llama3.2"
+                />
+                <p className="text-muted-foreground text-xs leading-relaxed">
+                  Ejemplo: <code>ollama pull llama3.2</code>. Si Ollama no está
+                  disponible, LEGADO cae al mock automáticamente. MLX u otros
+                  runtimes locales pueden exponerse con API compatible.
+                </p>
+              </div>
+            </>
+          ) : null}
+
+          {draft.provider === "openai" ? (
+            <div className="grid gap-2">
+              <Label htmlFor="apiKey">API key cloud (escape hatch)</Label>
+              <Input
+                id="apiKey"
+                type="password"
+                autoComplete="off"
+                value={draft.openaiApiKey}
+                onChange={(e) =>
+                  setDraft((s) => ({ ...s, openaiApiKey: e.target.value }))
+                }
+                placeholder="sk-…"
+              />
+              <p className="text-muted-foreground text-xs leading-relaxed">
+                No es el camino local-first. Solo si lo necesitas temporalmente;
+                la key queda en este navegador.
+              </p>
+            </div>
+          ) : null}
+
+          {draft.provider === "mock" ? (
+            <p className="text-muted-foreground rounded-lg border border-border/80 bg-muted/40 px-3 py-3 text-xs leading-relaxed">
+              El mock responde solo con tus memorias escritas, sin llamar a
+              ningún modelo. Ideal mientras eliges o instalas el equipo.
+            </p>
+          ) : null}
         </div>
 
         <DialogFooter className="flex-col gap-2 sm:flex-row sm:justify-between">
@@ -126,7 +174,9 @@ export function SettingsDialog({ settings, memories, onSave }: Props) {
               onSave({
                 ...draft,
                 personName: draft.personName.trim() || "Yo",
-                useApi: draft.useApi && draft.apiKey.trim().length > 0,
+                ollamaBaseUrl:
+                  draft.ollamaBaseUrl.trim() || "http://127.0.0.1:11434",
+                ollamaModel: draft.ollamaModel.trim() || "llama3.2",
               });
               setOpen(false);
             }}

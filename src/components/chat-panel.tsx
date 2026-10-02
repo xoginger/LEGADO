@@ -62,14 +62,16 @@ export function ChatPanel({
             content: m.content,
           })),
           personName: settings.personName,
-          apiKey: settings.apiKey,
-          useApi: settings.useApi,
+          provider: settings.provider,
+          ollamaBaseUrl: settings.ollamaBaseUrl,
+          ollamaModel: settings.ollamaModel,
+          openaiApiKey: settings.openaiApiKey,
         }),
       });
 
       const data = (await res.json()) as {
         reply?: string;
-        source?: "mock" | "api";
+        source?: "mock" | "ollama" | "openai";
         warning?: string;
         error?: string;
       };
@@ -116,9 +118,11 @@ export function ChatPanel({
           </p>
         </div>
         <Badge variant="outline" className="shrink-0 font-normal">
-          {settings.useApi && settings.apiKey
-            ? "API + fallback local"
-            : "Modo local"}
+          {settings.provider === "ollama"
+            ? "Ollama local"
+            : settings.provider === "openai"
+              ? "API cloud (opcional)"
+              : "Mock local"}
         </Badge>
       </div>
 
@@ -154,9 +158,11 @@ export function ChatPanel({
                     <p className="whitespace-pre-wrap">{message.content}</p>
                     {message.role === "assistant" && message.source ? (
                       <p className="mt-2 text-[11px] opacity-60">
-                        {message.source === "api"
-                          ? "Respuesta con API"
-                          : "Respuesta local"}
+                        {message.source === "ollama"
+                          ? "Respuesta con Ollama"
+                          : message.source === "openai"
+                            ? "Respuesta con API cloud"
+                            : "Respuesta mock local"}
                       </p>
                     ) : null}
                   </div>

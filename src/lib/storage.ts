@@ -36,10 +36,27 @@ export function saveMessages(messages: ChatMessage[]): void {
 
 export function loadSettings(): Settings {
   if (typeof window === "undefined") return DEFAULT_SETTINGS;
-  return {
+  const raw = safeParse<Partial<Settings> & {
+    apiKey?: string;
+    useApi?: boolean;
+  }>(localStorage.getItem(SETTINGS_KEY), {});
+
+  const migrated: Settings = {
     ...DEFAULT_SETTINGS,
-    ...safeParse<Partial<Settings>>(localStorage.getItem(SETTINGS_KEY), {}),
+    personName: raw.personName ?? DEFAULT_SETTINGS.personName,
+    provider: raw.provider ?? DEFAULT_SETTINGS.provider,
+    ollamaBaseUrl: raw.ollamaBaseUrl ?? DEFAULT_SETTINGS.ollamaBaseUrl,
+    ollamaModel: raw.ollamaModel ?? DEFAULT_SETTINGS.ollamaModel,
+    openaiApiKey:
+      raw.openaiApiKey ?? raw.apiKey ?? DEFAULT_SETTINGS.openaiApiKey,
   };
+
+  // Settings antiguos: useApi + apiKey → provider openai
+  if (!raw.provider && raw.useApi && (raw.openaiApiKey || raw.apiKey)) {
+    migrated.provider = "openai";
+  }
+
+  return migrated;
 }
 
 export function saveSettings(settings: Settings): void {
