@@ -102,15 +102,15 @@ Objetivo: **IA usable en texto** — guardar memorias y chatear en local, en esp
 
 El perfil se alimenta también desde redes y álbumes. Fuentes confirmadas en UI **Perfil / Fuentes**:
 
-| Fuente | Import MVP | OAuth |
+| Fuente | Import MVP | «Conectar» |
 | --- | --- | --- |
-| Instagram | ZIP/JSON Meta | Stub (`LEGADO_META_*`) |
-| Facebook | ZIP/JSON Meta (+ eventos) | Stub Meta |
-| X (Twitter) | JS/JSON/CSV/ZIP | Stub (`LEGADO_X_*`) |
-| Google Fotos | Takeout ZIP/JSON | Stub (`LEGADO_GOOGLE_*`) |
-| Apple Fotos | Carpeta/álbum/ZIP | Sin OAuth (sandbox macOS) |
+| Instagram | ZIP/JSON Meta | Próximamente (no finge login) |
+| Facebook | ZIP/JSON Meta (+ eventos) | Próximamente |
+| X (Twitter) | JS/JSON/CSV/ZIP | Próximamente |
+| Google Fotos | Takeout ZIP/JSON | Próximamente |
+| Apple Fotos | Carpeta/álbum/ZIP | No aplica (solo local) |
 
-**Privacidad:** parseo local; OAuth choca con local-first → no es requisito. Guía: [redes.md](./redes.md).
+**Privacidad:** parseo local; OAuth choca con local-first → no es requisito ni se simula. Guía: [redes.md](./redes.md).
 
 ## Después del MVP (roadmap)
 
